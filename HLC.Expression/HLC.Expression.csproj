@@ -1,10 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>HLC</Authors>
-    <Version>1.0.0</Version>
+	  <TargetFrameworks>netstandard2.0; net40; net452</TargetFrameworks>
+	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
+	  <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	  <Owners>侯龙超</Owners>
+	  <Authors>侯龙超</Authors>
+	  <Version>1.0.0.0</Version>
+	  <Description>表达式解析计算</Description>
+	  <Copyright>Copyright © HLC 2021</Copyright>
+	  <Product>HLC.Expression</Product>
+	  <PackageLicenseUrl />
+	  <PackageProjectUrl>https://github.com/houlongchao/HLC.Expression</PackageProjectUrl>
+	  <PackageTags>Expression, Common, Util</PackageTags>
+	  <RepositoryUrl>https://github.com/houlongchao/HLC.Expression</RepositoryUrl>
+	  <RepositoryType>Expression</RepositoryType>
+	  <PackageId>HLCExpression</PackageId>
   </PropertyGroup>
 
 </Project>
