@@ -13,6 +13,12 @@ namespace HLC.Expression
             Data = data;
         }
 
+        public Parameter(string data, ParameterType type)
+        {
+            Type = type;
+            Data = data;
+        }
+
         public Parameter(double data)
         {
             Type = ParameterType.Number;

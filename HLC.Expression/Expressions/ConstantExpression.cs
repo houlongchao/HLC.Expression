@@ -31,6 +31,11 @@ namespace HLC.Expression
                 return Result((double) Value);
             }
 
+            if (Type == ExpressionType.RangeConstant)
+            {
+                return new ResultExpression(ResultType.Range, Value);
+            }
+
             return Result(Value.ToString());
         }
 

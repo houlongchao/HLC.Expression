@@ -91,7 +91,7 @@
         Modulo,
 
         /// <summary>
-        /// 与 &&
+        /// 与 &amp;&amp;
         /// </summary>
         BooleanAnd,
 

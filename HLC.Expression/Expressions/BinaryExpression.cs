@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HLC.Expression.Utils;
 
 namespace HLC.Expression
 {
@@ -87,9 +88,14 @@ namespace HLC.Expression
                     bool result = ExpressionSetting.Instance.AreEquals(leftResult.NumberResult, rightResult.NumberResult);
                     return Result(result);
                 }
+                else if (leftResult.IsNumber() && rightResult.DataType == ResultType.Range)
+                {
+                    bool result = RangeUtil.IsInRange(leftResult.NumberResult, rightResult.Data.ToString());
+                    return Result(result);
+                }
                 else
                 {
-                    bool result = leftResult.Data.Equals(rightResult.Data);
+                    bool result = leftResult.Data == rightResult.Data;
                     return Result(result);
                 }
             }
@@ -103,9 +109,14 @@ namespace HLC.Expression
                     bool result = !ExpressionSetting.Instance.AreEquals(leftResult.NumberResult, rightResult.NumberResult);
                     return Result(result);
                 }
+                else if (leftResult.IsNumber() && rightResult.DataType == ResultType.Range)
+                {
+                    bool result = !RangeUtil.IsInRange(leftResult.NumberResult, rightResult.Data.ToString());
+                    return Result(result);
+                }
                 else
                 {
-                    bool result = !leftResult.Data.Equals(rightResult.Data);
+                    bool result = leftResult.Data != rightResult.Data;
                     return Result(result);
                 }
             }

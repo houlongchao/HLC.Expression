@@ -21,6 +21,11 @@
         StringConstant,
 
         /// <summary>
+        /// 区间范围
+        /// </summary>
+        RangeConstant,
+
+        /// <summary>
         /// 数值常量
         /// </summary>
         NumberConstant,

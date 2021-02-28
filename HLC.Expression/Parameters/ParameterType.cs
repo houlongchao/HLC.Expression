@@ -9,5 +9,6 @@
         Number,
         StringList,
         NumberList,
+        Range,
     }
 }

@@ -10,5 +10,6 @@
         String,
         NumberList,
         StringList,
+        Range,
     }
 }

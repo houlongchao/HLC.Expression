@@ -33,6 +33,25 @@ namespace HLC.Expression
         }
 
         /// <summary>
+        /// 检查表达式所需参数都在参数列表中
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public bool CheckParameters(Parameters parameters)
+        {
+            var variableKeys = GetVariableKeys();
+            foreach (var variableKey in variableKeys)
+            {
+                if (!parameters.ContainsKey(variableKey))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// 执行表达式树，获得运算结果
         /// </summary>
         /// <returns></returns>

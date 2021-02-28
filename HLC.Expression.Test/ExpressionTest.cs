@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 
 namespace HLC.Expression.Test
@@ -19,6 +17,10 @@ namespace HLC.Expression.Test
         [Test]
         public void TestSimpleInvoke()
         {
+            Assert.AreEqual(2, Expression.From("2").Invoke().NumberResult, Delta);
+            Assert.AreEqual(2, Expression.From("2.00").Invoke().NumberResult, Delta);
+            Assert.AreEqual(2, Expression.From("(2.00)").Invoke().NumberResult, Delta);
+
             Assert.AreEqual(52, Expression.From("50+2").Invoke().NumberResult, Delta);
             Assert.AreEqual(48, Expression.From("50-2").Invoke().NumberResult, Delta);
             Assert.AreEqual(100, Expression.From("50*2").Invoke().NumberResult, Delta);
@@ -87,6 +89,8 @@ namespace HLC.Expression.Test
             Assert.AreEqual(true, Expression.From("IF(1==1,true,false)").Invoke().BooleanResult);
             Assert.AreEqual("1", Expression.From("IF(1==1,'1','2')").Invoke().ToString());
 
+            Assert.AreEqual(true, Expression.From("2.2==(1,3.5)").Invoke().BooleanResult);
+
             var expression = Expression.From("NOT(2.1!=1.1||2.1<1.1)");
             var serialize = JsonConvert.SerializeObject(expression);
 
@@ -108,6 +112,7 @@ namespace HLC.Expression.Test
                 {"str3", "ccc"},
                 {"str4", "ddd"},
                 {"strlist1", new List<string>(){"aaa","bbb","ccc"}},
+                {"range", new Parameter("(1,5)", ParameterType.Range)},
             };
             Assert.AreEqual(4.2, Expression.From("{num1}+{num2}").Invoke(parameters).NumberResult, Delta);
             Assert.AreEqual(true, Expression.From("IN({num1},{numlist1})").Invoke(parameters).BooleanResult);
@@ -117,7 +122,12 @@ namespace HLC.Expression.Test
             Assert.AreEqual(true, Expression.From("IN({str4},{strlist1}) && IN({str1},{strlist1}) || (1+2*3-4)==MAX(1+2,2)").Invoke(parameters).BooleanResult);
 
             Assert.AreEqual("2", Expression.From("IF({str4}=='a','1','2')").Invoke(parameters).Data);
+            
+            Assert.AreEqual(true, Expression.From("2=={range}").Invoke(parameters).Data);
 
+            Assert.AreEqual(true, Expression.From("2=={range}").CheckParameters(parameters));
+
+            Assert.AreEqual(false, Expression.From("2=={empty}").CheckParameters(parameters));
             var expression = Expression.From("IN({num2},{numlist1},2.2)");
             Assert.AreEqual(true, Expression.From("IN({str4},'ddd') && IN({str1},{strlist1})").Invoke(parameters).BooleanResult);
 

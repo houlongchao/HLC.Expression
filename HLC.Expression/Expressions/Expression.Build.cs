@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using HLC.Expression.Utils;
 
 namespace HLC.Expression
 {
@@ -115,6 +117,18 @@ namespace HLC.Expression
                         operatorStack.Push(Operator.FunctionOr);
                         lastMatchType = MatchType.Function;
                         index += 3;
+                        continue;
+                    }
+                }
+
+                // 匹配区间，只有在二元运算等于号(==)右边才做匹配
+                if (lastMatchType == MatchType.BinaryOperator)
+                {
+                    int newIndex = TryRangeBuild(formula, index, expressionStack);
+                    if (newIndex > index)
+                    {
+                        lastMatchType = MatchType.Value;
+                        index = newIndex;
                         continue;
                     }
                 }
@@ -404,6 +418,11 @@ namespace HLC.Expression
             return new ConstantExpression(ExpressionType.StringConstant, value);
         }
 
+        public static ConstantExpression RangeConstant(string value)
+        {
+            return new ConstantExpression(ExpressionType.RangeConstant, value);
+        }
+        
         public static ConstantExpression BoolConstant(bool value)
         {
             return new ConstantExpression(ExpressionType.BooleanConstant, value);
@@ -1013,6 +1032,49 @@ namespace HLC.Expression
                 expressionStack.Push(Variable(value));
                 return currentIndex;
             }
+        }
+
+        /// <summary>
+        /// 尝试从字符串<paramref name="formula"/>中位置<paramref name="index"/>的位置开始构建区间
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <param name="index"></param>
+        /// <param name="expressionStack"></param>
+        /// <returns>返回新的位置index，如果返回的位置与传入的相同则表示没有获取到</returns>
+        private static int TryRangeBuild(string formula, int index, Stack<Expression> expressionStack)
+        {
+            if (!(formula[index] == '(' || formula[index] == '['))
+            {
+                return index;
+            }
+
+            var endIndex = Int32.MaxValue;
+
+            var findIndex = formula.IndexOf(')', index);
+            if (findIndex > 0)
+            {
+                endIndex = Math.Min(endIndex, findIndex);
+            }
+
+            findIndex = formula.IndexOf(')', index);
+            if (findIndex > 0)
+            {
+                endIndex = Math.Min(endIndex, findIndex);
+            }
+
+            if (endIndex == Int32.MaxValue)
+            {
+                return index;
+            }
+
+            var range = formula.Substring(index, endIndex - index + 1);
+            if (RangeUtil.IsRange(range))
+            {
+                expressionStack.Push(RangeConstant(range));
+                return endIndex + 1;
+            }
+
+            return index;
         }
 
         #endregion

@@ -38,7 +38,10 @@ namespace HLC.Expression
             {
                 return new ResultExpression(ResultType.StringList, parameter.Data);
             }
-
+            if (parameter.Type == ParameterType.Range)
+            {
+                return new ResultExpression(ResultType.Range, parameter.Data);
+            }
             throw new ExpressionException($"Not parse Parameter type:{parameter.Type} in VariableExpression Invoke. ");
         }
 
