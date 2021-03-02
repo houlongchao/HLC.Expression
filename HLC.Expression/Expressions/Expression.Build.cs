@@ -986,13 +986,18 @@ namespace HLC.Expression
         private static int TryVariableBuild(string formula, int index, Stack<Expression> expressionStack)
         {
             int currentIndex = index;
-
-            if (!ExpressionSetting.Instance.IsVariableStartChar(formula[currentIndex]))
+            if (ExpressionSetting.Instance.HasVariableStartChar())
             {
-                return index;
+                if (ExpressionSetting.Instance.IsVariableStartChar(formula[currentIndex]))
+                {
+                    ++currentIndex;
+                }
+                else
+                {
+                    return index;
+                }
             }
-
-            ++currentIndex;
+            
             int startIndex = currentIndex;
 
             while (currentIndex < formula.Length)

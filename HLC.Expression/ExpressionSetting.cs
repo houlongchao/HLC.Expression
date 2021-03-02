@@ -112,6 +112,15 @@ namespace HLC.Expression
         }
 
         /// <summary>
+        /// 是否存在变量开始字符
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool HasVariableStartChar()
+        {
+            return true;
+        }
+
+        /// <summary>
         /// 检查指定字符是否为变量开始字符
         /// </summary>
         /// <param name="c"></param>

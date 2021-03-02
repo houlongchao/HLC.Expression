@@ -8,7 +8,7 @@
 	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	  <Owners>侯龙超</Owners>
 	  <Authors>侯龙超</Authors>
-	  <Version>1.0.0.0</Version>
+	  <Version>1.1.0</Version>
 	  <Description>表达式解析计算</Description>
 	  <Copyright>Copyright © HLC 2021</Copyright>
 	  <Product>HLC.Expression</Product>
