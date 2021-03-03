@@ -82,57 +82,18 @@ namespace HLC.Expression.Test
     
     public class MySetting : ExpressionSetting
     {
-        public override bool HasStringStartChar()
-        {
-            return false;
-        }
+        public override bool HasStringStartChar => false;
 
-        public override bool HasStringEndChar()
-        {
-            return false;
-        }
+        public override bool HasStringEndChar => false;
 
-        public override bool HasVariableEndChar()
-        {
-            return false;
-        }
+        public override bool HasVariableEndChar => false;
 
-        public override bool IsVariableStartChar(char c)
-        {
-            return c == '$';
-        }
+        public override char VariableStartChar => '$';
     }
 
     public class MySetting2 : ExpressionSetting
     {
-        public override bool HasStringStartChar()
-        {
-            return true;
-        }
-
-        public override bool HasStringEndChar()
-        {
-            return true;
-        }
-
-        public override bool IsStringStartChar(char c)
-        {
-            return c == StringStartChar;
-        }
-
-        public override bool IsStringEndChar(char c)
-        {
-            return c == StringEndChar;
-        }
-
-        public override bool HasVariableStartChar()
-        {
-            return false;
-        }
-
-        public override bool HasVariableEndChar()
-        {
-            return false;
-        }
+        public override bool HasVariableStartChar => false;
+        public override bool HasVariableEndChar => false;
     }
 }

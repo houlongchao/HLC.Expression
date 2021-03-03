@@ -924,9 +924,9 @@ namespace HLC.Expression
         private static int TryStringBuild(string formula, int index, Stack<Expression> expressionStack)
         {
             var currentIndex = index;
-            if (ExpressionSetting.Instance.HasStringStartChar())
+            if (ExpressionSetting.Instance.HasStringStartChar)
             {
-                if (ExpressionSetting.Instance.IsStringStartChar(formula[currentIndex]))
+                if (ExpressionSetting.Instance.StringStartChar.Equals(formula[currentIndex]))
                 {
                     ++currentIndex;
                 }
@@ -956,9 +956,9 @@ namespace HLC.Expression
             }
 
             var value = formula.Substring(startIndex, currentIndex - startIndex);
-            if (ExpressionSetting.Instance.HasStringEndChar())
+            if (ExpressionSetting.Instance.HasStringEndChar)
             {
-                if (ExpressionSetting.Instance.IsStringEndChar(formula[currentIndex]))
+                if (ExpressionSetting.Instance.StringEndChar.Equals(formula[currentIndex]))
                 {
                     ++currentIndex;
                     expressionStack.Push(StringConstant(value));
@@ -986,9 +986,9 @@ namespace HLC.Expression
         private static int TryVariableBuild(string formula, int index, Stack<Expression> expressionStack)
         {
             int currentIndex = index;
-            if (ExpressionSetting.Instance.HasVariableStartChar())
+            if (ExpressionSetting.Instance.HasVariableStartChar)
             {
-                if (ExpressionSetting.Instance.IsVariableStartChar(formula[currentIndex]))
+                if (ExpressionSetting.Instance.VariableStartChar.Equals(formula[currentIndex]))
                 {
                     ++currentIndex;
                 }
@@ -1019,9 +1019,9 @@ namespace HLC.Expression
 
             string value = formula.Substring(startIndex, currentIndex - startIndex);
 
-            if (ExpressionSetting.Instance.HasVariableEndChar())
+            if (ExpressionSetting.Instance.HasVariableEndChar)
             {
-                if (ExpressionSetting.Instance.IsVariableEndChar(formula[currentIndex]))
+                if (ExpressionSetting.Instance.VariableEndChar.Equals(formula[currentIndex]))
                 {
                     ++currentIndex;
                     expressionStack.Push(Variable(value));

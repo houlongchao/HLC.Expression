@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace HLC.Expression
 {
@@ -43,8 +44,22 @@ namespace HLC.Expression
         {
             if (Type == ExpressionType.StringConstant)
             {
-                return $"{ExpressionSetting.Instance.StringStartChar}{Value}{ExpressionSetting.Instance.StringEndChar}";
+                var sb = new StringBuilder();
+                if (ExpressionSetting.Instance.HasStringStartChar)
+                {
+                    sb.Append(ExpressionSetting.Instance.StringStartChar);
+                }
+
+                sb.Append(Value);
+
+                if (ExpressionSetting.Instance.HasStringEndChar)
+                {
+                    sb.Append(ExpressionSetting.Instance.StringEndChar);
+                }
+
+                return sb.ToString();
             }
+
             return $"{Value}";
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace HLC.Expression
 {
@@ -47,7 +48,20 @@ namespace HLC.Expression
 
         public override string ToString()
         {
-            return "{" + Key + "}";
+            var sb = new StringBuilder();
+            if (ExpressionSetting.Instance.HasVariableStartChar)
+            {
+                sb.Append(ExpressionSetting.Instance.VariableStartChar);
+            }
+
+            sb.Append(Key);
+
+            if (ExpressionSetting.Instance.HasVariableEndChar)
+            {
+                sb.Append(ExpressionSetting.Instance.VariableEndChar);
+            }
+
+            return sb.ToString();
         }
 
 

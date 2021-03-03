@@ -9,6 +9,9 @@ namespace HLC.Expression
     {
         private static ExpressionSetting _instance;
 
+        /// <summary>
+        /// 设置实例
+        /// </summary>
         public static ExpressionSetting Instance
         {
             get
@@ -21,10 +24,6 @@ namespace HLC.Expression
                 return _instance;
             }
         }
-
-        public virtual char StringStartChar => '\'';
-        public virtual char StringEndChar => '\'';
-
 
         /// <summary>
         /// 自定义一个表达式设置
@@ -60,42 +59,21 @@ namespace HLC.Expression
         }
 
         /// <summary>
-        /// 是否有字符串开始字符
+        /// 是否有字符串开始字符，默认<c>true</c>
         /// </summary>
-        /// <returns></returns>
-        public virtual bool HasStringStartChar()
-        {
-            return true;
-        }
-
+        public virtual bool HasStringStartChar => true;
         /// <summary>
-        /// 是否是字符串开始字符
+        /// 是否有字符串结束字符，默认<c>true</c>
         /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        public virtual bool IsStringStartChar(char c)
-        {
-            return c == StringStartChar;
-        }
-
+        public virtual bool HasStringEndChar => true;
         /// <summary>
-        /// 是否有字符串结束字符
+        /// 字符串开始字符，默认<c>'</c>
         /// </summary>
-        /// <returns></returns>
-        public virtual bool HasStringEndChar()
-        {
-            return true;
-        }
-
+        public virtual char StringStartChar => '\'';
         /// <summary>
-        /// 是否是字符串结束字符
+        /// 字符串开结束字符，默认<c>'</c>
         /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        public virtual bool IsStringEndChar(char c)
-        {
-            return c == StringEndChar;
-        }
+        public virtual char StringEndChar => '\'';
 
         #endregion
 
@@ -110,45 +88,23 @@ namespace HLC.Expression
         {
             return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_' || c == '.';
         }
-
         /// <summary>
-        /// 是否存在变量开始字符
+        /// 是否有变量开始字符，默认<c>true</c>
         /// </summary>
-        /// <returns></returns>
-        public virtual bool HasVariableStartChar()
-        {
-            return true;
-        }
-
+        public virtual bool HasVariableStartChar => true;
         /// <summary>
-        /// 检查指定字符是否为变量开始字符
+        /// 是否有变量结束字符，默认<c>true</c>
         /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        public virtual bool IsVariableStartChar(char c)
-        {
-            return c == '{';
-        }
-
+        public virtual bool HasVariableEndChar => true;
         /// <summary>
-        /// 是否存在变量结束字符
+        /// 变量开始字符，默认<c>{</c>
         /// </summary>
-        /// <returns></returns>
-        public virtual bool HasVariableEndChar()
-        {
-            return true;
-        }
-
+        public virtual char VariableStartChar => '{';
         /// <summary>
-        /// 检查指定字符是否为变量结束字符
+        /// 变量开始字符，默认<c>}</c>
         /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        public virtual bool IsVariableEndChar(char c)
-        {
-            return c == '}';
-        }
-
+        public virtual char VariableEndChar => '}';
+        
         #endregion
     }
 }
