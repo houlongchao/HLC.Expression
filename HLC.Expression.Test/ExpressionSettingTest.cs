@@ -25,20 +25,19 @@ namespace HLC.Expression.Test
                 {"num2", 2.2},
                 {"num3", -2},
                 {"num4", -2.2},
-                {"numlist1", new List<double>(){1,2,3,4,5}},
+                {"numlist1", new List<decimal>(){1,2,3,4,5}},
                 {"str1", "aaa"},
                 {"str2", "bbb"},
                 {"str3", "ccc"},
                 {"str4", "ddd"},
                 {"strlist1", new List<string>(){"aaa","bbb","ccc"}},
             };
-            Assert.AreEqual(4.2, Expression.From("$num1+$num2").Invoke(parameters).NumberResult, Delta);
+            Assert.AreEqual(4.2m, Expression.From("$num1+$num2").Invoke(parameters).NumberResult);
             Assert.AreEqual(true, Expression.From("IN($num1,$numlist1)").Invoke(parameters).BooleanResult);
             Assert.AreEqual(true, Expression.From("IN($num2,$numlist1,2.2)").Invoke(parameters).BooleanResult);
             Assert.AreEqual(true, Expression.From("IN($str1,$strlist1)").Invoke(parameters).BooleanResult);
             Assert.AreEqual(false, Expression.From("IN($str4,$strlist1)").Invoke(parameters).BooleanResult);
             Assert.AreEqual(true, Expression.From("IN($str4,$strlist1) && IN($str1,$strlist1) || (1+2*3-4)==MAX(1+2,2)").Invoke(parameters).BooleanResult);
-
 
             ExpressionSetting.SetSetting(new ExpressionSetting());
         }
@@ -61,33 +60,34 @@ namespace HLC.Expression.Test
                 {"num2", 2.2},
                 {"num3", -2},
                 {"num4", -2.2},
-                {"numlist1", new List<double>(){1,2,3,4,5}},
+                {"numlist1", new List<decimal>(){1,2,3,4,5}},
                 {"str1", "aaa"},
                 {"str2", "bbb"},
                 {"str3", "ccc"},
                 {"str4", "ddd"},
                 {"strlist1", new List<string>(){"aaa","bbb","ccc"}},
             };
-            Assert.AreEqual(4.2, Expression.From("num1+num2").Invoke(parameters).NumberResult, Delta);
+            Assert.AreEqual(4.2m, Expression.From("num1+num2").Invoke(parameters).NumberResult);
             Assert.AreEqual(true, Expression.From("IN(num1,numlist1)").Invoke(parameters).BooleanResult);
             Assert.AreEqual(true, Expression.From("IN(num2,numlist1,2.2)").Invoke(parameters).BooleanResult);
             Assert.AreEqual(true, Expression.From("IN(str1,strlist1)").Invoke(parameters).BooleanResult);
             Assert.AreEqual(false, Expression.From("IN(str4,strlist1)").Invoke(parameters).BooleanResult);
             Assert.AreEqual(true, Expression.From("IN(str4,strlist1) && IN(str1,strlist1) || (1+2*3-4)==MAX(1+2,2)").Invoke(parameters).BooleanResult);
+        }
 
-
-            ExpressionSetting.SetSetting(new ExpressionSetting());
+        [Test]
+        public void Test3()
+        {
+            Assert.AreEqual(0, Expression.From("0/0").Invoke().NumberResult);
+            Assert.AreEqual(0, Expression.From("12/0").Invoke().NumberResult);
         }
     }
-    
+
     public class MySetting : ExpressionSetting
     {
         public override bool HasStringStartChar => false;
-
         public override bool HasStringEndChar => false;
-
         public override bool HasVariableEndChar => false;
-
         public override char VariableStartChar => '$';
     }
 

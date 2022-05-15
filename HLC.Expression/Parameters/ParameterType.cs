@@ -10,5 +10,7 @@
         StringList,
         NumberList,
         Range,
+        Boolean,
+        DateTime,
     }
 }

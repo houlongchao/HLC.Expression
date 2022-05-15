@@ -29,7 +29,7 @@ namespace HLC.Expression
 
             if (Type == ExpressionType.NumberConstant)
             {
-                return Result((double) Value);
+                return Result((decimal) Value);
             }
 
             if (Type == ExpressionType.RangeConstant)
@@ -59,7 +59,6 @@ namespace HLC.Expression
 
                 return sb.ToString();
             }
-
             return $"{Value}";
         }
     }

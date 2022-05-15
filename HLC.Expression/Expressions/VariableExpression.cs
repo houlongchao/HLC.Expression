@@ -19,7 +19,12 @@ namespace HLC.Expression
         {
             if (parameters == null || !parameters.ContainsKey(Key))
             {
-                throw new ExpressionException($"Not found parameter: {Key}.");
+                if (ExpressionSetting.Instance.CheckVariableExist)
+                {
+                    throw new ExpressionParameterNotFoundException(Key);
+                }
+
+                return new ResultExpression(ResultType.Empty, null);
             }
             var parameter = parameters[Key];
 
@@ -43,11 +48,21 @@ namespace HLC.Expression
             {
                 return new ResultExpression(ResultType.Range, parameter.Data);
             }
-            throw new ExpressionException($"Not parse Parameter type:{parameter.Type} in VariableExpression Invoke. ");
+            if (parameter.Type == ParameterType.Boolean)
+            {
+                return new ResultExpression(ResultType.Boolean, parameter.Data);
+            }
+            if (parameter.Type == ParameterType.DateTime)
+            {
+                return new ResultExpression(ResultType.DateTime, parameter.Data);
+            }
+
+            throw new ExpressionCalculateException(this.ToString(), $"Not parse Parameter type:{parameter.Type} in VariableExpression Invoke. ");
         }
 
         public override string ToString()
         {
+
             var sb = new StringBuilder();
             if (ExpressionSetting.Instance.HasVariableStartChar)
             {
@@ -63,7 +78,6 @@ namespace HLC.Expression
 
             return sb.ToString();
         }
-
 
         public override IList<string> GetVariableKeys()
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace HLC.Expression
 {
@@ -13,13 +14,13 @@ namespace HLC.Expression
             Data = data;
         }
 
-        public Parameter(string data, ParameterType type)
+        public Parameter(object data, ParameterType type)
         {
             Type = type;
             Data = data;
         }
 
-        public Parameter(double data)
+        public Parameter(decimal data)
         {
             Type = ParameterType.Number;
             Data = data;
@@ -31,24 +32,57 @@ namespace HLC.Expression
             Data = data;
         }
 
-        public Parameter(IList<double> data)
+        public Parameter(IList<decimal> data)
         {
             Type = ParameterType.NumberList;
             Data = data;
         }
 
+        public Parameter(bool data)
+        {
+            Type = ParameterType.Boolean;
+            Data = data;
+        }
+
+        public Parameter(DateTime data)
+        {
+            Type = ParameterType.DateTime;
+            Data = data;
+        }
+
+        /// <summary>
+        /// 参数类型 <see cref="ParameterType"/>
+        /// </summary>
         public ParameterType Type { get; private set; }
 
+        /// <summary>
+        /// 数据
+        /// </summary>
         public object Data { get; private set; }
+
+        /// <summary>
+        /// 元数据
+        /// </summary>
+        public Dictionary<string, string> Metadata { get; set; } = new Dictionary<string, string>();
 
         public TData GetData<TData>()
         {
-            return (TData) Data;
+            return (TData)Data;
+        }
+
+        public static implicit operator Parameter(decimal data)
+        {
+            return new Parameter(data);
         }
 
         public static implicit operator Parameter(double data)
         {
-            return new Parameter(data);
+            return new Parameter((decimal)data);
+        }
+
+        public static implicit operator Parameter(int data)
+        {
+            return new Parameter((decimal)data);
         }
 
         public static implicit operator Parameter(string data)
@@ -56,7 +90,12 @@ namespace HLC.Expression
             return new Parameter(data);
         }
 
-        public static implicit operator Parameter(List<double> data)
+        public static implicit operator Parameter(bool data)
+        {
+            return new Parameter(data);
+        }
+
+        public static implicit operator Parameter(List<decimal> data)
         {
             return new Parameter(data);
         }

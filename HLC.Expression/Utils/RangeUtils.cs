@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace HLC.Expression.Utils
+namespace HLC.Expression
 {
-    /// <summary>
-    /// 区间工具
-    /// </summary>
-    public class RangeUtil
+    public class RangeUtils
     {
         /// <summary>
         /// 判断给定的字符串是否为一个区间字符串
@@ -26,7 +23,7 @@ namespace HLC.Expression.Utils
         /// <returns></returns>
         public static bool IsInRange(double num, string range)
         {
-            var match = Regex.Match(range,"^(?<leftBacket>[\\(\\[])(?<leftNum>\\d+(\\.\\d+)?) ?, ?(?<rightNum>\\d+(\\.\\d+)?)(?<rightBacket>[\\)\\]])$");
+            var match = Regex.Match(range, "^(?<leftBacket>[\\(\\[])(?<leftNum>\\d+(\\.\\d+)?) ?, ?(?<rightNum>\\d+(\\.\\d+)?)(?<rightBacket>[\\)\\]])$");
             if (match.Success && match.Groups["leftBacket"].Success && match.Groups["leftNum"].Success && match.Groups["rightNum"].Success && match.Groups["rightBacket"].Success)
             {
                 if (range.StartsWith("(") && Convert.ToDouble(match.Groups["leftNum"].Value) >= num)
@@ -48,6 +45,14 @@ namespace HLC.Expression.Utils
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// 判断给定的数字是否在制定区间中
+        /// </summary>
+        public static bool IsInRange(decimal num, string range)
+        {
+            return IsInRange((double)num, range);
         }
     }
 }

@@ -5,11 +5,13 @@
     /// </summary>
     public enum ResultType
     {
+        Empty,
         Boolean,
         Number,
         String,
         NumberList,
         StringList,
         Range,
+        DateTime,
     }
 }

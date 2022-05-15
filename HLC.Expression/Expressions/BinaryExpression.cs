@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HLC.Expression.Utils;
 
 namespace HLC.Expression
 {
@@ -22,137 +21,254 @@ namespace HLC.Expression
 
         public override ResultExpression Invoke(Parameters parameters)
         {
-            if (Type == ExpressionType.Add)
+            switch (Type)
             {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                double result = leftResult.NumberResult + rightResult.NumberResult;
-                return Result(result);
-            }
-            if (Type == ExpressionType.Subtract)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                double result = leftResult.NumberResult - rightResult.NumberResult;
-                return Result(result);
-            }
-            if (Type == ExpressionType.Multiply)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                double result = leftResult.NumberResult * rightResult.NumberResult;
-                return Result(result);
-            }
-            if (Type == ExpressionType.Divide)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                double result = leftResult.NumberResult / rightResult.NumberResult;
-                return Result(result);
-            }
-            if (Type == ExpressionType.Greater)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                bool result = leftResult.NumberResult > rightResult.NumberResult;
-                return Result(result);
-            }
-            if (Type == ExpressionType.GreaterEqual)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                bool result = leftResult.NumberResult >= rightResult.NumberResult;
-                return Result(result);
-            }
-            if (Type == ExpressionType.Less)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                bool result = leftResult.NumberResult < rightResult.NumberResult;
-                return Result(result);
-            }
-            if (Type == ExpressionType.LessEqual)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                bool result = leftResult.NumberResult <= rightResult.NumberResult;
-                return Result(result);
-            }
-            if (Type == ExpressionType.Equal)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
+                case ExpressionType.Add:
+                    {
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
+                        try
+                        {
+                            var result = leftResult.NumberResult + rightResult.NumberResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        catch
+                        {
+                            string result = leftResult.StringResult + rightResult.StringResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                    }
+                case ExpressionType.Subtract:
+                    {
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
+                        var result = leftResult.NumberResult - rightResult.NumberResult;
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.Multiply:
+                    {
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
+                        var result = leftResult.NumberResult * rightResult.NumberResult;
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.Divide:
+                    {
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
+                        if (rightResult.NumberResult == 0)
+                        {
+                            switch (ExpressionSetting.Instance.DivideZero)
+                            {
+                                case DivideZero.ReturnZero:
+                                    InvokeResult = Result(0);
+                                    break;
+                                case DivideZero.Throw:
+                                    throw new ExpressionCalculateException(ToString(), "除0异常");
+                                default:
+                                    var result = leftResult.NumberResult / rightResult.NumberResult;
+                                    InvokeResult = Result(result);
+                                    break;
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            var result = leftResult.NumberResult / rightResult.NumberResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                    }
+                case ExpressionType.Greater:
+                    {
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
+                        if (leftResult.IsDateTime())
+                        {
+                            bool result = leftResult.DateTimeResult > rightResult.DateTimeResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        {
+                            bool result = leftResult.NumberResult > rightResult.NumberResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                    }
+                case ExpressionType.GreaterEqual:
+                    {
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
+                        if (leftResult.IsDateTime())
+                        {
+                            bool result = leftResult.DateTimeResult >= rightResult.DateTimeResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        {
+                            bool result = leftResult.NumberResult >= rightResult.NumberResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                    }
+                case ExpressionType.Less:
+                    {
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
 
-                if (leftResult.IsNumber() && rightResult.IsNumber())
-                {
-                    bool result = ExpressionSetting.Instance.AreEquals(leftResult.NumberResult, rightResult.NumberResult);
-                    return Result(result);
-                }
-                else if (leftResult.IsNumber() && rightResult.DataType == ResultType.Range)
-                {
-                    bool result = RangeUtil.IsInRange(leftResult.NumberResult, rightResult.Data.ToString());
-                    return Result(result);
-                }
-                else
-                {
-                    bool result = leftResult.Data == rightResult.Data;
-                    return Result(result);
-                }
-            }
-            if (Type == ExpressionType.NotEqual)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
+                        if (leftResult.IsDateTime())
+                        {
+                            bool result = leftResult.DateTimeResult < rightResult.DateTimeResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        {
+                            bool result = leftResult.NumberResult < rightResult.NumberResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                    }
+                case ExpressionType.LessEqual:
+                    {
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
+                        if (leftResult.IsDateTime())
+                        {
+                            bool result = leftResult.DateTimeResult <= rightResult.DateTimeResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        {
+                            bool result = leftResult.NumberResult <= rightResult.NumberResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                    }
+                case ExpressionType.Equal:
+                    {
+                        if (Left is VariableExpression vel && !parameters.ContainsKey(vel.Key))
+                        {
+                            InvokeResult = Result(false);
+                            break;
+                        }
+                        if (Right is VariableExpression ver && !parameters.ContainsKey(ver.Key))
+                        {
+                            InvokeResult = Result(false);
+                            break;
+                        }
 
-                if (leftResult.IsNumber() && rightResult.IsNumber())
-                {
-                    bool result = !ExpressionSetting.Instance.AreEquals(leftResult.NumberResult, rightResult.NumberResult);
-                    return Result(result);
-                }
-                else if (leftResult.IsNumber() && rightResult.DataType == ResultType.Range)
-                {
-                    bool result = !RangeUtil.IsInRange(leftResult.NumberResult, rightResult.Data.ToString());
-                    return Result(result);
-                }
-                else
-                {
-                    bool result = leftResult.Data != rightResult.Data;
-                    return Result(result);
-                }
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
+
+                        if (leftResult.IsNumber() && rightResult.IsNumber())
+                        {
+                            bool result = ExpressionSetting.Instance.AreEquals(leftResult.NumberResult, rightResult.NumberResult);
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else if (leftResult.IsNumber() && rightResult.IsRange())
+                        {
+                            bool result = RangeUtils.IsInRange(leftResult.NumberResult, rightResult.Data.ToString());
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else if (leftResult.IsDateTime() || rightResult.IsDateTime())
+                        {
+                            bool result = leftResult.DateTimeResult == rightResult.DateTimeResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else
+                        {
+                            bool result = leftResult.ToString() == rightResult.ToString();
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                    }
+                case ExpressionType.NotEqual:
+                    {
+                        if (Left is VariableExpression vel && !parameters.ContainsKey(vel.Key))
+                        {
+                            InvokeResult = Result(true);
+                            break;
+                        }
+                        if (Right is VariableExpression ver && !parameters.ContainsKey(ver.Key))
+                        {
+                            InvokeResult = Result(true);
+                            break;
+                        }
+
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
+
+                        if (leftResult.IsNumber() && rightResult.IsNumber())
+                        {
+                            bool result = !ExpressionSetting.Instance.AreEquals(leftResult.NumberResult, rightResult.NumberResult);
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else if (leftResult.IsNumber() && rightResult.DataType == ResultType.Range)
+                        {
+                            bool result = !RangeUtils.IsInRange(leftResult.NumberResult, rightResult.ToString());
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else if (leftResult.IsDateTime() || rightResult.IsDateTime())
+                        {
+                            bool result = leftResult.DateTimeResult != rightResult.DateTimeResult;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else
+                        {
+                            bool result = leftResult.ToString() != rightResult.ToString();
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                    }
+                case ExpressionType.Power:
+                    {
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
+                        var result = Math.Pow((double)leftResult.NumberResult, (double)rightResult.NumberResult);
+                        InvokeResult = Result((decimal)result);
+                        break;
+                    }
+                case ExpressionType.Modulo:
+                    {
+                        ResultExpression leftResult = Left.Invoke(parameters);
+                        ResultExpression rightResult = Right.Invoke(parameters);
+                        int result = (int)leftResult.NumberResult % (int)rightResult.NumberResult;
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.BooleanAnd:
+                    {
+                        ResultExpression leftResult = (Left is VariableExpression vel && !parameters.ContainsKey(vel.Key)) ? Result(false) : Left.Invoke(parameters);
+                        ResultExpression rightResult = (Right is VariableExpression ver && !parameters.ContainsKey(ver.Key)) ? Result(false) : Right.Invoke(parameters);
+                        bool result = leftResult.BooleanResult && rightResult.BooleanResult;
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.BooleanOr:
+                    {
+                        ResultExpression leftResult = (Left is VariableExpression vel && !parameters.ContainsKey(vel.Key)) ? Result(false) : Left.Invoke(parameters);
+                        ResultExpression rightResult = (Right is VariableExpression ver && !parameters.ContainsKey(ver.Key)) ? Result(false) : Right.Invoke(parameters);
+                        bool result = leftResult.BooleanResult || rightResult.BooleanResult;
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                default:
+                    {
+                        throw new NotSupportedException($"Not Supported {Type} In BinaryExpression");
+                    }
             }
 
-            if (Type == ExpressionType.Power)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                double result = Math.Pow(leftResult.NumberResult, rightResult.NumberResult);
-                return Result(result);
-            }
-
-            if (Type == ExpressionType.Modulo)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                int result = (int)leftResult.NumberResult % (int)rightResult.NumberResult;
-                return Result(result);
-            }
-
-            if (Type == ExpressionType.BooleanAnd)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                bool result = leftResult.BooleanResult && rightResult.BooleanResult;
-                return Result(result);
-            }
-
-            if (Type == ExpressionType.BooleanOr)
-            {
-                ResultExpression leftResult = Left.Invoke(parameters);
-                ResultExpression rightResult = Right.Invoke(parameters);
-                bool result = leftResult.BooleanResult || rightResult.BooleanResult;
-                return Result(result);
-            }
-            return null;
+            return InvokeResult;
         }
 
         public override string ToString()
@@ -169,63 +285,84 @@ namespace HLC.Expression
                 sb.Append(Left);
             }
 
-            if (Type == ExpressionType.Add)
+            switch (Type)
             {
-                sb.Append(" + ");
+                case ExpressionType.Add:
+                {
+                    sb.Append(" + ");
+                    break;
+                }
+                case ExpressionType.Subtract:
+                {
+                    sb.Append(" - ");
+                    break;
+                }
+                case ExpressionType.Multiply:
+                {
+                    sb.Append(" * ");
+                    break;
+                }
+                case ExpressionType.Divide:
+                {
+                    sb.Append(" / ");
+                    break;
+                }
+                case ExpressionType.Greater:
+                {
+                    sb.Append(" > ");
+                    break;
+                }
+                case ExpressionType.GreaterEqual:
+                {
+                    sb.Append(" >= ");
+                    break;
+                }
+                case ExpressionType.Less:
+                {
+                    sb.Append(" < ");
+                    break;
+                }
+                case ExpressionType.LessEqual:
+                {
+                    sb.Append(" <= ");
+                    break;
+                }
+                case ExpressionType.Equal:
+                {
+                    sb.Append(" == ");
+                    break;
+                }
+                case ExpressionType.NotEqual:
+                {
+                    sb.Append(" != ");
+                    break;
+                }
+                case ExpressionType.Modulo:
+                {
+                    sb.Append(" % ");
+                    break;
+                }
+                case ExpressionType.BooleanAnd:
+                {
+                    sb.Append(" && ");
+                    break;
+                }
+                case ExpressionType.BooleanOr:
+                {
+                    sb.Append(" || ");
+                    break;
+                }
+                case ExpressionType.Power:
+                {
+                    sb.Append("^");
+                    break;
+                }
+                default:
+                {
+                    throw new NotSupportedException($"Not Supported {Type} In BinaryExpression");
+                }
             }
-            else if (Type == ExpressionType.Subtract)
-            {
-                sb.Append(" - ");
-            }
-            else if (Type == ExpressionType.Multiply)
-            {
-                sb.Append(" * ");
-            }
-            else if (Type == ExpressionType.Divide)
-            {
-                sb.Append(" / ");
-            }
-            else if (Type == ExpressionType.Greater)
-            {
-                sb.Append(" > ");
-            }
-            else if (Type == ExpressionType.GreaterEqual)
-            {
-                sb.Append(" >= ");
-            }
-            else if (Type == ExpressionType.Less)
-            {
-                sb.Append(" < ");
-            }
-            else if (Type == ExpressionType.LessEqual)
-            {
-                sb.Append(" <= ");
-            }
-            else if (Type == ExpressionType.Equal)
-            {
-                sb.Append(" == ");
-            }
-            else if (Type == ExpressionType.NotEqual)
-            {
-                sb.Append(" != ");
-            }
-            else if (Type == ExpressionType.Modulo)
-            {
-                sb.Append(" % ");
-            }
-            else if (Type == ExpressionType.BooleanAnd)
-            {
-                sb.Append(" && ");
-            }
-            else if (Type == ExpressionType.BooleanOr)
-            {
-                sb.Append(" || ");
-            }
-            else if (Type == ExpressionType.Power)
-            {
-                sb.Append("^");
-            }
-
+            
             if (Right.Type.GetPriority() < Type.GetPriority())
             {
                 sb.Append("(");
