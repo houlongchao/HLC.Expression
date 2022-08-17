@@ -59,6 +59,10 @@ namespace HLC.Expression
 
                 return sb.ToString();
             }
+            else if(Type == ExpressionType.BooleanConstant)
+            {
+                return Value.ToString().ToLower();
+            }
             return $"{Value}";
         }
     }

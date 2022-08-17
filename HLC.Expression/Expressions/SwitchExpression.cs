@@ -21,10 +21,11 @@ namespace HLC.Expression
             var value = Value.Invoke(parameters);
             if (value == null)
             {
-                return null;
+                throw new ExpressionCalculateException("Input value cannot be null", this.ToString());
             }
-            foreach (var child in Children)
+            for (var i = 0; i < Children.Count; i++)
             {
+                var child = Children[i];
                 var item1 = child.Item1.Invoke(parameters);
                 if (item1 == null)
                 {
@@ -34,7 +35,7 @@ namespace HLC.Expression
                 {
                     return child.Item2.Invoke(parameters);
                 }
-                else if(value.IsNumber() && item1.IsRange() && RangeUtils.IsInRange(value.NumberResult, item1.Data.ToString()))
+                else if (value.IsNumber() && item1.IsRange() && RangeUtils.IsInRange(value.NumberResult, item1.Data.ToString()))
                 {
                     return child.Item2.Invoke(parameters);
                 }
@@ -46,8 +47,13 @@ namespace HLC.Expression
                 {
                     return child.Item2.Invoke(parameters);
                 }
+                else if (i == Children.Count - 1 && item1.StringResult == string.Empty)
+                {
+                    // 如果匹配到最后一个，并且匹配项是空字符串则作为默认匹配项返回
+                    return child.Item2.Invoke(parameters);
+                }
             }
-            return null;
+            throw new ExpressionCalculateException(this.ToString(), "No match was found");
         }
 
         public override string ToString()

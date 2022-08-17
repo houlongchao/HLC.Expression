@@ -163,7 +163,7 @@ namespace HLC.Expression
         {
             return new List<Item>()
             {
-                new Item(Boolean, "NOT()", "参数取反")
+                new Item(Boolean, "NOT()", "逻辑取反")
                 {
                     Demo = "NOT(true)  NOT(true && false) NOT(1 > 2)",
                     Input = "Boolean值，或结果为Boolean的表达式。",

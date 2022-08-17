@@ -65,10 +65,12 @@ namespace HLC.Expression.Test
             Assert.AreEqual("ab", Expression.From("SUBSTR('abcde', 0, 2)").Invoke().ToString());
             Assert.AreEqual("abcde", Expression.From("SUBSTR('abcde', 0)").Invoke().ToString());
             Assert.AreEqual("bcde", Expression.From("SUBSTR('abcde', 1)").Invoke().ToString());
+            Assert.AreEqual("4", Expression.From("SWITCH('ab','bc':1, 12:2, 'A':'3', '':'4')").Invoke().ToString());
 
             Assert.AreEqual(12, Expression.From("SUBNUM('1234', 0, 2)").Invoke().NumberResult);
             Assert.AreEqual(23, Expression.From("SUBNUM('1234', 1, 2)").Invoke().NumberResult);
             Assert.AreEqual(234, Expression.From("SUBNUM('1234', 1)").Invoke().NumberResult);
+            Assert.AreEqual("4", Expression.From("SWITCHC('aaaa','bc':1, 12:2, 'Ab':'3', '':'4')").Invoke().ToString());
 
             Assert.AreEqual(2, Expression.From("SWITCH('a','bc':1, 'a':2, '2':'3')").Invoke().NumberResult);
             Assert.AreEqual("3", Expression.From("SWITCH(15,'bc':1, 12:2, 4+11:'3')").Invoke().ToString());
@@ -369,13 +371,13 @@ namespace HLC.Expression.Test
 
             Assert.AreEqual(false, Expression.From("2=={null}").CheckParameters(parameters));
 
+            Assert.AreEqual("true == false", Expression.From("true==false").ToString());
 
             Assert.AreEqual("aaabbb_ccc", Expression.From("CONCAT({str1},{str2},'_',{str3})").Invoke(parameters).Data);
             Assert.AreEqual("aaa", Expression.From("CONCAT({str1})").Invoke(parameters).Data);
             Assert.AreEqual("aaa", Expression.From("CONCAT({str1},{str1_})").Invoke(parameters).Data);
             Assert.AreEqual("aaabbbccc", Expression.From("CONCAT({strlist1})").Invoke(parameters).Data);
             Assert.AreEqual("aaabbbcccaaa", Expression.From("CONCAT({strlist1},{str1})").Invoke(parameters).Data);
-
 
             var expression = Expression.From("IN({num2},{numlist1},2.2)");
             var settings = new JsonSerializerSettings();

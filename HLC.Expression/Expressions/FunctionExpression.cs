@@ -362,8 +362,8 @@ namespace HLC.Expression
                     }
                 case ExpressionType.AsNum:
                     {
-                        var value = Children[0].Invoke(parameters).ToString();
-                        InvokeResult = Result(decimal.Parse(value));
+                        var result = Children[0].Invoke(parameters);
+                        InvokeResult = Result(result.NumberResult);
                         break;
                     }
                 case ExpressionType.ToStr:
