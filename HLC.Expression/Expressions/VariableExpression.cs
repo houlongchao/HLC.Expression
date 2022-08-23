@@ -69,11 +69,14 @@ namespace HLC.Expression
                 sb.Append(ExpressionSetting.Instance.VariableStartChar);
             }
 
-            sb.Append(Key);
-
             if (ExpressionSetting.Instance.HasVariableEndChar)
             {
+                sb.Append(ExpressionSetting.Instance.EncodeVariable(Key));
                 sb.Append(ExpressionSetting.Instance.VariableEndChar);
+            }
+            else
+            {
+                sb.Append(Key);
             }
 
             return sb.ToString();

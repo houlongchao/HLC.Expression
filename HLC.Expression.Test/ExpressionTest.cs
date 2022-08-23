@@ -9,8 +9,6 @@ namespace HLC.Expression.Test
 {
     public class ExpressionTest
     {
-        private const double Delta = 0.00001;
-
         [SetUp]
         public void Setup()
         {
@@ -144,7 +142,7 @@ namespace HLC.Expression.Test
             Assert.AreEqual(false, Expression.From("IN('AA','A','AAA','BB')").Invoke().BooleanResult);
             Assert.AreEqual(false, Expression.From("IN('西','一路','向西')").Invoke().BooleanResult);
             Assert.AreEqual(true, Expression.From("IN('西','一','路','向','西')").Invoke().BooleanResult);
-            Assert.AreEqual(true, Expression.From(@"IN('西\'','一','路','向','西\'')").Invoke().BooleanResult);
+            Assert.AreEqual(true, Expression.From(@"IN('西''','一','路','向','西''')").Invoke().BooleanResult);
             Assert.AreEqual(true, Expression.From("IN('西','一','路','向','西')").Invoke().BooleanResult);
 
             Assert.AreEqual(true, Expression.From("NOT(2.1!=1.1&&2.1<1.1)").Invoke().BooleanResult);
@@ -252,6 +250,8 @@ namespace HLC.Expression.Test
                 {"str2", "bbb"},
                 {"str3", "ccc"},
                 {"str4", "ddd"},
+                {"str5", "{d'd''d}'"},
+                {"{str6}", "{d'd''d}'"},
                 {"strnum", "123.3"},
                 {"empty", ""},
                 {"A", "是" },
@@ -266,13 +266,23 @@ namespace HLC.Expression.Test
                 {"range", new Parameter("(1,5)", ParameterType.Range)},
                 {"dt", new Parameter(DateTime.Parse("2021-01-01"))},
                 {"10", "10" },
-                {"1", 1 }
+                {"1", 1 },
+                {"+", "+" },
             };
 
             parameters["metadata"] = new Parameter("metadataValue");
             parameters["metadata"].Metadata["meta01"] = "value01";
             parameters["metadata"].Metadata["meta02"] = "True";
             parameters["metadata"].Metadata["meta03"] = "123";
+
+            Assert.AreEqual("{d'd''d}'", Expression.From("{str5}").Invoke(parameters).StringResult);
+            Assert.AreEqual("{d'd''d}'", Expression.From("'{d''d''''d}'''").Invoke(parameters).StringResult);
+            Assert.AreEqual(true, Expression.From("{str5} == '{d''d''''d}'''").Invoke(parameters).BooleanResult);
+            Assert.AreEqual("{d'd''d}'", Expression.From("{{str6}}}").Invoke(parameters).StringResult);
+            Assert.AreEqual("{d'd''d}'", Expression.From("'{d''d''''d}'''").Invoke(parameters).StringResult);
+            Assert.AreEqual(true, Expression.From("{{str6}}} == '{d''d''''d}'''").Invoke(parameters).BooleanResult);
+
+            Assert.AreEqual(true, Expression.From("{+}=='+'").Invoke(parameters).BooleanResult);
 
             Assert.AreEqual(true, Expression.From("META({metadata}, 'meta01') == 'value01'").Invoke(parameters).BooleanResult);
             Assert.AreEqual(true, Expression.From("META({metadata}, 'meta02') == 'True'").Invoke(parameters).BooleanResult);

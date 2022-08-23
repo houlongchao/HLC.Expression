@@ -50,11 +50,14 @@ namespace HLC.Expression
                     sb.Append(ExpressionSetting.Instance.StringStartChar);
                 }
 
-                sb.Append(Value);
-
                 if (ExpressionSetting.Instance.HasStringEndChar)
                 {
+                    sb.Append(ExpressionSetting.Instance.EncodeString(Value.ToString()));
                     sb.Append(ExpressionSetting.Instance.StringEndChar);
+                }
+                else
+                {
+                    sb.Append(Value);
                 }
 
                 return sb.ToString();

@@ -84,6 +84,34 @@ namespace HLC.Expression
         /// </summary>
         public virtual char StringEndChar => '\'';
 
+        /// <summary>
+        /// 解码字符串
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public string DecodeString(string value)
+        {
+            if (!HasStringEndChar)
+            {
+                return value;
+            }
+            return value.Replace($"{StringEndChar}{StringEndChar}", $"{StringEndChar}");
+        }
+
+        /// <summary>
+        /// 编码字符串
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public string EncodeString(string value)
+        {
+            if (!HasStringEndChar)
+            {
+                return value;
+            }
+            return value.Replace($"{StringEndChar}", $"{StringEndChar}{StringEndChar}");
+        }
+
         #endregion
 
         #region Variable
@@ -115,6 +143,34 @@ namespace HLC.Expression
         /// 变量结束限定符，默认为右花括号<c>{</c>
         /// </summary>
         public virtual char VariableEndChar => '}';
+
+        /// <summary>
+        /// 解码变量
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public string DecodeVariable(string value)
+        {
+            if (!HasStringEndChar)
+            {
+                return value;
+            }
+            return value.Replace($"{VariableEndChar}{VariableEndChar}", $"{VariableEndChar}");
+        }
+
+        /// <summary>
+        /// 编码变量
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public string EncodeVariable(string value)
+        {
+            if (!HasStringEndChar)
+            {
+                return value;
+            }
+            return value.Replace($"{VariableEndChar}", $"{VariableEndChar}{VariableEndChar}");
+        }
 
         #endregion
 

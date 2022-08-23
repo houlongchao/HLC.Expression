@@ -1692,13 +1692,23 @@ namespace HLC.Expression
                 // 如果有结束字符，则可以接受所有字符，对包含的结束字符识别转义
                 if (ExpressionSetting.Instance.HasStringEndChar)
                 {
-                    // 发现了结束字符，且不是被转义的
-                    if (currentIndex > index && formula[currentIndex] == ExpressionSetting.Instance.StringEndChar && formula[currentIndex - 1] != '\\')
+                    // 发现了结束字符
+                    if (currentIndex > index && formula[currentIndex] == ExpressionSetting.Instance.StringEndChar)
                     {
-                        break;
+                        //如果当前结束字符后面紧跟一个结束字符，则标识当前结束字符是被转义的，不作为结束字符
+                        if (currentIndex + 1 < formula.Length && formula[currentIndex + 1] == ExpressionSetting.Instance.StringEndChar)
+                        {
+                            currentIndex += 2;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
-
-                    ++currentIndex;
+                    else
+                    {
+                        ++currentIndex;
+                    }
                 }
                 else if (ExpressionSetting.Instance.IsStringChar(formula[currentIndex])) // 如果没有结束字符，必须是严格要求的可识别字符
                 {
@@ -1726,7 +1736,7 @@ namespace HLC.Expression
                 if (ExpressionSetting.Instance.StringEndChar.Equals(formula[currentIndex]))
                 {
                     ++currentIndex;
-                    expressionStack.Push(StringConstant(value));
+                    expressionStack.Push(StringConstant(ExpressionSetting.Instance.DecodeString(value)));
                     return currentIndex;
                 }
                 else
@@ -1771,13 +1781,23 @@ namespace HLC.Expression
                 // 如果有结束字符，则可以接受所有字符，对包含的结束字符识别转义
                 if (ExpressionSetting.Instance.HasVariableEndChar)
                 {
-                    // 发现了结束字符，且不是被转义的
-                    if (currentIndex > index + 1 && formula[currentIndex] == ExpressionSetting.Instance.VariableEndChar && formula[currentIndex - 1] != '\\')
+                    // 发现了结束字符
+                    if (currentIndex > index + 1 && formula[currentIndex] == ExpressionSetting.Instance.VariableEndChar)
                     {
-                        break;
+                        //如果当前结束字符后面紧跟一个结束字符，则标识当前结束字符是被转义的，不作为结束字符
+                        if (currentIndex + 1 < formula.Length && formula[currentIndex + 1] == ExpressionSetting.Instance.VariableEndChar)
+                        {
+                            currentIndex += 2;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
-
-                    ++currentIndex;
+                    else
+                    {
+                        ++currentIndex;
+                    }
                 }
                 else if (ExpressionSetting.Instance.IsVariableNameChar(formula[currentIndex])) // 如果没有结束字符，必须是严格要求的可识别字符
                 {
@@ -1805,7 +1825,7 @@ namespace HLC.Expression
                 if (ExpressionSetting.Instance.VariableEndChar.Equals(formula[currentIndex]))
                 {
                     ++currentIndex;
-                    expressionStack.Push(Variable(value));
+                    expressionStack.Push(Variable(ExpressionSetting.Instance.DecodeVariable(value)));
                     return currentIndex;
                 }
                 else

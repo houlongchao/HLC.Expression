@@ -220,7 +220,7 @@ namespace HLC.Expression
             {
                 return false;
             }
-            return Regex.IsMatch(checkStr, @"^[+-]?[0123456789]*[.]?[0123456789]*$", RegexOptions.Compiled);
+            return decimal.TryParse(checkStr, out _);
         }
     }
 }
