@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace HLC.Expression
 {
@@ -361,6 +362,7 @@ namespace HLC.Expression
                         }
                     }
                 case ExpressionType.AsNum:
+                case ExpressionType.ToNum:
                     {
                         var result = Children[0].Invoke(parameters);
                         InvokeResult = Result(result.NumberResult);
@@ -583,6 +585,154 @@ namespace HLC.Expression
                                     break;
                                 }
                         }
+                        break;
+                    }
+                case ExpressionType.Left:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var length = Children[1].Invoke(parameters).NumberResult;
+                        var result = value.Substring(0, (int)length);
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.Right:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var length = Children[1].Invoke(parameters).NumberResult;
+                        var result = value.Substring(value.Length - (int)length);
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.Reverse:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var result = string.Join("", value.Reverse());
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.Length:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var result = value.Length;
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.FIND:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var matchValue = Children[1].Invoke(parameters).StringResult;
+                        var result = value.IndexOf(matchValue);
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.ASUM:
+                    {
+                        var values = Children[0].Invoke(parameters).NumberListResult;
+                        var result = values.Sum();
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.ACOUNT:
+                    {
+                        var values = Children[0].Invoke(parameters).ListResult;
+                        var result = values.Count;
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.AINDEX:
+                    {
+                        var valueExpression = Children[0].Invoke(parameters);
+                        var index = Children[1].Invoke(parameters).NumberResult;
+                        if (index < 1)
+                        {
+                            InvokeResult = Result("");
+                            break;
+                        }
+
+                        if (valueExpression.IsNumberList())
+                        {
+                            var values = valueExpression.NumberListResult;
+                            if (values.Count >= index)
+                            {
+                                InvokeResult = Result(values[(int)index - 1]);
+                                break;
+                            }
+                            else
+                            {
+                                InvokeResult = Result("");
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            var values = valueExpression.ListResult;
+                            if (values.Count >= index)
+                            {
+                                InvokeResult = Result(values[(int)index - 1].ToString());
+                                break;
+                            }
+                            else
+                            {
+                                InvokeResult = Result("");
+                                break;
+                            }
+                        }
+                    }
+                case ExpressionType.AMATCH:
+                    {
+                        var valueExpression = Children[0].Invoke(parameters);
+                        var matchExpression = Children[1].Invoke(parameters);
+                        if (valueExpression.IsNumberList() && matchExpression.IsNumber())
+                        {
+                            var values = valueExpression.NumberListResult;
+                            InvokeResult = Result(-1);
+                            for (int i = 0; i < values.Count; i++)
+                            {
+                                if (values[i] == matchExpression.NumberResult)
+                                {
+                                    InvokeResult = Result((int)i + 1);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            var values = valueExpression.ListResult;
+                            InvokeResult = Result(-1);
+                            for (int i = 0; i < values.Count; i++)
+                            {
+                                if (values[i]?.ToString() == matchExpression.StringResult)
+                                {
+                                    InvokeResult = Result((int)i + 1);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                case ExpressionType.IsStart:
+                    {
+                        var valueExpression = Children[0].Invoke(parameters);
+                        var matchExpression = Children[1].Invoke(parameters);
+                        var result = valueExpression.StringResult.StartsWith(matchExpression.StringResult);
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.IsEnd:
+                    {
+                        var valueExpression = Children[0].Invoke(parameters);
+                        var matchExpression = Children[1].Invoke(parameters);
+                        var result = valueExpression.StringResult.EndsWith(matchExpression.StringResult);
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.IsMatch:
+                    {
+                        var valueExpression = Children[0].Invoke(parameters);
+                        var matchExpression = Children[1].Invoke(parameters);
+                        var result = Regex.IsMatch(valueExpression.StringResult, matchExpression.StringResult);
+                        InvokeResult = Result(result);
                         break;
                     }
                 default:
@@ -813,6 +963,71 @@ namespace HLC.Expression
                 case ExpressionType.META:
                     {
                         sb.Append("META(");
+                        break;
+                    }
+                case ExpressionType.ASUM:
+                    {
+                        sb.Append("ASUM(");
+                        break;
+                    }
+                case ExpressionType.AINDEX:
+                    {
+                        sb.Append("AINDEX(");
+                        break;
+                    }
+                case ExpressionType.AMATCH:
+                    {
+                        sb.Append("AMATCH(");
+                        break;
+                    }
+                case ExpressionType.ACOUNT:
+                    {
+                        sb.Append("ACOUNT(");
+                        break;
+                    }
+                case ExpressionType.ToNum:
+                    {
+                        sb.Append("TONUM(");
+                        break;
+                    }
+                case ExpressionType.Left:
+                    {
+                        sb.Append("LEFT(");
+                        break;
+                    }
+                case ExpressionType.Right:
+                    {
+                        sb.Append("RIGHT(");
+                        break;
+                    }
+                case ExpressionType.Reverse:
+                    {
+                        sb.Append("REVERSE(");
+                        break;
+                    }
+                case ExpressionType.FIND:
+                    {
+                        sb.Append("FIND(");
+                        break;
+                    }
+                case ExpressionType.Length:
+                    {
+                        sb.Append("LENGTH(");
+                        break;
+                    }
+                case ExpressionType.IsStart:
+                    {
+                        sb.Append("ISSTART(");
+                        break;
+                    }
+                case ExpressionType.IsEnd:
+                    {
+                        sb.Append("ISEND(");
+                        break;
+                    }
+                case ExpressionType.IsMatch:
+                    {
+                        sb.Append("ISMATCH(");
                         break;
                     }
                 default:

@@ -5,10 +5,8 @@ namespace HLC.Expression.Test
 {
     public class ExpressionSettingTest
     {
-        private const double Delta = 0.00001;
-
         [Test]
-        public void Test()
+        public void TestMySetting1()
         {
             ExpressionSetting.SetSetting(new MySetting());
 
@@ -43,7 +41,7 @@ namespace HLC.Expression.Test
         }
 
         [Test]
-        public void Test2()
+        public void TestMySetting2()
         {
             ExpressionSetting.SetSetting(new MySetting2());
 
@@ -73,13 +71,6 @@ namespace HLC.Expression.Test
             Assert.AreEqual(true, Expression.From("IN(str1,strlist1)").Invoke(parameters).BooleanResult);
             Assert.AreEqual(false, Expression.From("IN(str4,strlist1)").Invoke(parameters).BooleanResult);
             Assert.AreEqual(true, Expression.From("IN(str4,strlist1) && IN(str1,strlist1) || (1+2*3-4)==MAX(1+2,2)").Invoke(parameters).BooleanResult);
-        }
-
-        [Test]
-        public void Test3()
-        {
-            Assert.AreEqual(0, Expression.From("0/0").Invoke().NumberResult);
-            Assert.AreEqual(0, Expression.From("12/0").Invoke().NumberResult);
         }
     }
 

@@ -214,6 +214,31 @@
         /// </summary>
         SubNum,
 
+        /// <summary>
+        /// 从左侧截取字符串
+        /// </summary>
+        Left,
+
+        /// <summary>
+        /// 从右侧截取字符串
+        /// </summary>
+        Right,
+
+        /// <summary>
+        /// 获取字符串长度
+        /// </summary>
+        Length,
+
+        /// <summary>
+        /// 获取指定字符下标
+        /// </summary>
+        FIND,
+
+        /// <summary>
+        /// 字符串取反 REVERSE(
+        /// </summary>
+        Reverse,
+
         #endregion
 
         #region 参数值处理
@@ -224,16 +249,6 @@
         DateTime,
 
         /// <summary>
-        /// 含有数据
-        /// </summary>
-        HasValue,
-
-        /// <summary>
-        /// 是否是数字
-        /// </summary>
-        IsNumber,
-
-        /// <summary>
         /// 获取数据，如果没有则返回默认值
         /// </summary>
         Get,
@@ -242,6 +257,11 @@
         /// 作为数字
         /// </summary>
         AsNum,
+
+        /// <summary>
+        /// 转为数字
+        /// </summary>
+        ToNum,
 
         /// <summary>
         /// 转为字符串
@@ -361,6 +381,59 @@
         /// 圆周率
         /// </summary>
         PI,
+
+        #endregion
+
+        #region 值判断
+
+        /// <summary>
+        /// 含有数据
+        /// </summary>
+        HasValue,
+
+        /// <summary>
+        /// 是否是数字
+        /// </summary>
+        IsNumber,
+
+        /// <summary>
+        /// 是否以指定字符串开始 ISSTART(
+        /// </summary>
+        IsStart,
+
+        /// <summary>
+        /// 是否以指定字符串结束 ISEND(
+        /// </summary>
+        IsEnd,
+
+        /// <summary>
+        /// 是否可以用指定正则匹配 ISMATCH(
+        /// </summary>
+        IsMatch,
+
+        #endregion
+
+        #region 数组
+
+        /// <summary>
+        /// 数组求和
+        /// </summary>
+        ASUM,
+
+        /// <summary>
+        /// 数据元素获取
+        /// </summary>
+        AINDEX,
+
+        /// <summary>
+        /// 数组元素位置获取
+        /// </summary>
+        AMATCH,
+
+        /// <summary>
+        /// 数组数量获取
+        /// </summary>
+        ACOUNT,
 
         #endregion
     }

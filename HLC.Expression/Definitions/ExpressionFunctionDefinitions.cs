@@ -10,6 +10,7 @@ namespace HLC.Expression
         public const string If = "判断函数";
         public const string Boolean = "逻辑函数";
         public const string Math = "数学函数";
+        public const string Array = "数组函数";
 
         public static List<Item> Items { get; } = new List<Item>();
 
@@ -20,9 +21,14 @@ namespace HLC.Expression
             Items.AddRange(GetNumber());
             Items.AddRange(GetText());
             Items.AddRange(GetBoolean());
+            Items.AddRange(GetArray());
             Items.AddRange(GetMath());
         }
 
+        /// <summary>
+        /// 文本函数
+        /// </summary>
+        /// <returns></returns>
         private static List<Item> GetText()
         {
             return new List<Item>()
@@ -45,9 +51,43 @@ namespace HLC.Expression
                     Input = "输入参数必须3个，第一个参数为要截取的源字符串，第二个为开始截取坐标，第三个为截取长度。",
                     Output = "字符串。输出截取的字符串结果转为数值。",
                 },
+                new Item(Text, "LEFT()", "从左侧取指定长度子串")
+                {
+                    Demo = "LEFT({OPT:A}, 2)  LEFT('123456', 3)",
+                    Input = "输入参数必须2个，第一个参数为要截取的源字符串，第二个为截取长度。",
+                    Output = "字符串。输出从左侧截取的字符串结果。",
+                },
+                new Item(Text, "RIGHT()", "从右侧取指定长度子串")
+                {
+                    Demo = "RIGHT({OPT:A}, 2)  RIGHT('123456', 3)",
+                    Input = "输入参数必须2个，第一个参数为要截取的源字符串，第二个为截取长度。",
+                    Output = "字符串。输出从右侧截取的字符串结果。",
+                },
+                new Item(Text, "REVERSE()", "反转字符串")
+                {
+                    Demo = "REVERSE({OPT:A})  REVERSE('123456')",
+                    Input = "字符串或计算结果为字符串。",
+                    Output = "字符串。输出输入字符串的反转字符串。",
+                },
+                new Item(Text, "FIND()", "获取下标")
+                {
+                    Demo = "FIND({OPT:A}, '2')  FIND('123456', '23')",
+                    Input = "输入参数必须2个，第一个参数为要匹配的源字符串，第二个为匹配字符。",
+                    Output = "整数。输出匹配到的位置下标（下标从0开始）。",
+                },
+                new Item(Text, "LENGTH()", "获取字符串长度")
+                {
+                    Demo = "LENGTH({OPT:A})  LENGTH('123456')",
+                    Input = "字符串或计算结果为字符串。",
+                    Output = "整数。输出输入字符串的长度。",
+                },
             };
         }
 
+        /// <summary>
+        /// 数值函数
+        /// </summary>
+        /// <returns></returns>
         private static List<Item> GetNumber()
         {
             return new List<Item>()
@@ -85,6 +125,10 @@ namespace HLC.Expression
             };
         }
 
+        /// <summary>
+        /// 参数函数
+        /// </summary>
+        /// <returns></returns>
         private static List<Item> GetValue()
         {
             return new List<Item>()
@@ -101,9 +145,9 @@ namespace HLC.Expression
                     Input = "输入参数必须为2个或3个，第一个为变量，第二个为属性名字符串，第三个可选为转换类型('bool','num', 'txt'),不传或其它输入时默认为txt",
                     Output = "属性值",
                 },
-                new Item(Value, "ASNUM()", "转为数字")
+                new Item(Value, "TONUM()", "转为数字")
                 {
-                    Demo = "ASNUM({OPT:NUM1})   ASNUM('123')",
+                    Demo = "TONUM({OPT:NUM1})   TONUM('123')",
                     Input = "一个输入参数",
                     Output = "结果数字",
                 },
@@ -112,18 +156,6 @@ namespace HLC.Expression
                     Demo = "TOSTR({OPT:DATETIME})   TOSTR({OPT:DATETIME}, 'yyyyMMdd')",
                     Input = "变量和一个可选格式化字符串",
                     Output = "字符串",
-                },
-                new Item(Value, "HASVALUE()", "是否有数据")
-                {
-                    Demo = "HASVALUE({OPT:A})  HASVALUE({OPT:B})",
-                    Input = "一个参数变量",
-                    Output = "逻辑值。输出当前参数变量是否有数据。",
-                },
-                new Item(Value, "ISNUMBER()", "是否为数值")
-                {
-                    Demo = "ISNUMBER({OPT:A})  ISNUMBER({OPT:A}+{OPT:B})",
-                    Input = "参数变量，或一个表达式。",
-                    Output = "逻辑值。输出结果是否为数值",
                 },
                 new Item(Value, "DATETIME()", "字符串转日期时间")
                 {
@@ -134,6 +166,10 @@ namespace HLC.Expression
             };
         }
 
+        /// <summary>
+        /// 判断函数
+        /// </summary>
+        /// <returns></returns>
         private static List<Item> GetIf()
         {
             return new List<Item>()
@@ -159,6 +195,10 @@ namespace HLC.Expression
             };
         }
 
+        /// <summary>
+        /// 逻辑函数
+        /// </summary>
+        /// <returns></returns>
         private static List<Item> GetBoolean()
         {
             return new List<Item>()
@@ -187,9 +227,43 @@ namespace HLC.Expression
                     Input = "输入参数至少2个，判断第一个参数是否在后面参数列表中。",
                     Output = "逻辑值。如果第一个参数在后面参数列表中则为true，否则为false。",
                 },
+                new Item(Boolean, "HASVALUE()", "是否有数据")
+                {
+                    Demo = "HASVALUE({OPT:A})  HASVALUE({OPT:B})",
+                    Input = "一个参数变量",
+                    Output = "逻辑值。输出当前参数变量是否有数据。",
+                },
+                new Item(Boolean, "ISNUMBER()", "是否为数值")
+                {
+                    Demo = "ISNUMBER({OPT:A})  ISNUMBER({OPT:A}+{OPT:B})",
+                    Input = "参数变量，或一个表达式。",
+                    Output = "逻辑值。输出结果是否为数值",
+                },
+                new Item(Boolean, "ISSTART()", "是否以指定字符串开始")
+                {
+                    Demo = "ISSTART({OPT:A}, 'a')  ISSTART({OPT:A}, '123')",
+                    Input = "输入参数必须为2个，第一个为字符串或计算结果为字符串的表达式，第二个为要匹配的字符串",
+                    Output = "逻辑值。输出结果为第一个参数是否以第二个参数开始",
+                },
+                new Item(Boolean, "ISEND()", "是否以指定字符串结尾")
+                {
+                    Demo = "ISEND({OPT:A}, 'a')  ISEND({OPT:A}, '123')",
+                    Input = "输入参数必须为2个，第一个为字符串或计算结果为字符串的表达式，第二个为要匹配的字符串",
+                    Output = "逻辑值。输出结果为第一个参数是否以第二个参数结尾",
+                },
+                new Item(Boolean, "ISMATCH()", "是否可以用指定正则匹配")
+                {
+                    Demo = "ISMATCH('123456', '^\\d*$')  ISMATCH('123456', '^1\\d{5}$')",
+                    Input = "输入参数必须为2个，第一个为字符串或计算结果为字符串的表达式，第二个为要匹配的正则字符串",
+                    Output = "逻辑值。输出结果为第一个参数是否可以用第二个正则表达式进行匹配",
+                },
             };
         }
 
+        /// <summary>
+        /// 数学函数
+        /// </summary>
+        /// <returns></returns>
         private static List<Item> GetMath()
         {
             return new List<Item>()
@@ -319,6 +393,41 @@ namespace HLC.Expression
                     Demo = "PI()",
                     Input = "无",
                     Output = "常量圆周率PI"
+                },
+            };
+        }
+
+        /// <summary>
+        /// 参数数组函数
+        /// </summary>
+        /// <returns></returns>
+        private static List<Item> GetArray()
+        {
+            return new List<Item>()
+            {
+                new Item(Array, "ASUM()", "数组求和")
+                {
+                    Demo = "ASUM({Array})",
+                    Input = "数值数组参数，或者结果未数值数组的表达式",
+                    Output = "数值。输出输入数值数值参数的求和。"
+                },
+                new Item(Array, "ACOUNT()", "数组长度")
+                {
+                    Demo = "ACOUNT({Array})  ACOUNT({Array})",
+                    Input = "数值数组参数，或者结果未数值数组的表达式",
+                    Output = "整数。输出输入数组的长度。"
+                },
+                new Item(Array, "AINDEX()", "获取指定下标数据")
+                {
+                    Demo = "AINDEX({Array}, 1)  AINDEX({Array}, 1)",
+                    Input = "输入参数必须2个。第一个为数组参数，或结果为数组的表达式，第二个为指定下标（从1开始）",
+                    Output = "任意值。输出指定下标位置的值。没有数据返回空字符串。"
+                },
+                new Item(Array, "AMATCH()", "下标搜索")
+                {
+                    Demo = "AMATCH({Array}, 100)  AMATCH({Array}, '123')",
+                    Input = "输入参数必须2个。第一个为数组参数，或结果为数组的表达式，第二个为要匹配的数据",
+                    Output = "整数。输出匹配到的数据下标。没匹配到返回-1 。"
                 },
             };
         }

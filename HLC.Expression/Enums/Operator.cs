@@ -180,6 +180,31 @@
         /// </summary>
         SubNum,
 
+        /// <summary>
+        /// 从左侧截取字符串 LEFT(
+        /// </summary>
+        Left,
+
+        /// <summary>
+        /// 从右侧截取字符串 RIGHT(
+        /// </summary>
+        Right,
+
+        /// <summary>
+        /// 获取字符串长度 LENGTH(
+        /// </summary>
+        Length,
+
+        /// <summary>
+        /// 获取指定字符下标 FIND(
+        /// </summary>
+        FIND,
+
+        /// <summary>
+        /// 字符串取反 REVERSE(
+        /// </summary>
+        Reverse,
+
         #endregion
 
         #region 数学函数
@@ -299,16 +324,6 @@
         DateTime,
 
         /// <summary>
-        /// 含有值 HASVALUE(
-        /// </summary>
-        HasValue,
-
-        /// <summary>
-        /// 是数字 ISVALUE(
-        /// </summary>
-        IsNumber,
-
-        /// <summary>
         /// 获取值 GET(
         /// </summary>
         Get,
@@ -319,6 +334,11 @@
         AsNum,
 
         /// <summary>
+        /// 转为数字  TONUM(
+        /// </summary>
+        ToNum,
+
+        /// <summary>
         /// 转为字符串 TOSTR(
         /// </summary>
         ToStr,
@@ -327,6 +347,59 @@
         /// 获取属性 META(
         /// </summary>
         META,
+
+        #endregion
+
+        #region 数组
+
+        /// <summary>
+        /// 数组求和 ASUM(
+        /// </summary>
+        ASUM,
+
+        /// <summary>
+        /// 数据元素获取 AINDEX(
+        /// </summary>
+        AINDEX,
+
+        /// <summary>
+        /// 数组元素位置获取 AMATCH(
+        /// </summary>
+        AMATCH,
+
+        /// <summary>
+        /// 数组数量获取 ACOUNT(
+        /// </summary>
+        ACOUNT,
+
+        #endregion
+
+        #region 值判断
+
+        /// <summary>
+        /// 含有值 HASVALUE(
+        /// </summary>
+        HasValue,
+
+        /// <summary>
+        /// 是否为数字 ISNUMBER(
+        /// </summary>
+        IsNumber,
+
+        /// <summary>
+        /// 是否以指定字符串开始 ISSTART(
+        /// </summary>
+        IsStart,
+
+        /// <summary>
+        /// 是否以指定字符串结束 ISEND(
+        /// </summary>
+        IsEnd,
+
+        /// <summary>
+        /// 是否可以用指定正则匹配 ISMATCH(
+        /// </summary>
+        IsMatch,
 
         #endregion
 
