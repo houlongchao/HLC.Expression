@@ -104,7 +104,7 @@ namespace HLC.Expression
         /// <returns></returns>
         public bool IsRange()
         {
-            return DataType == ResultType.Range;
+            return DataType == ResultType.Range || RangeUtils.IsRange(Data?.ToString());
         }
 
         /// <summary>
@@ -114,9 +114,24 @@ namespace HLC.Expression
         {
             get
             {
-                var result = Data is decimal d ? d : decimal.Parse(Data?.ToString() ?? "0");
+                if (IsList())
+                {
+                    decimal result = 0;
+                    foreach (var item in ListResult)
+                    {
+                        if (decimal.TryParse(item?.ToString(), out var d))
+                        {
+                            result += d;
+                        }
+                    }
+                    return result;
+                }
+                else
+                {
+                    var result = Data is decimal d ? d : decimal.Parse(Data?.ToString() ?? "0");
 
-                return ExpressionSetting.Instance.ConvertDecimal(result);
+                    return ExpressionSetting.Instance.ConvertDecimal(result);
+                }
             }
         }
         /// <summary>

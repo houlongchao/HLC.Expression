@@ -25,6 +25,8 @@ namespace HLC.Expression.Test
                 {"num3", -2},
                 {"num4", -2.2},
                 {"numlist1", new List<decimal>(){0,1,2,3,4,5}},
+                {"numlist2", new List<decimal>(){1,1,2,3,5,8,11,19,8,5,3,2,1,1}},
+                {"numlist3", new List<string>(){"1","1","2","3","5","8","11","19","8","5","3","2","1","1"}},
                 {"str", "abcde"},
                 {"str1", "aaa"},
                 {"str2", "bbb"},
@@ -48,6 +50,7 @@ namespace HLC.Expression.Test
                 {"10", "10" },
                 {"1", 1 },
                 {"+", "+" },
+                {"range2", "[1, 10]" },
             };
 
             parameters["metadata"] = new Parameter("metadataValue");
@@ -204,6 +207,14 @@ namespace HLC.Expression.Test
         public void TestParameterInvoke()
         {
             var parameters = InitParameters();
+
+            Assert.AreEqual("aaa", Expression.From("CONCAT({str0},{str1})").Invoke(parameters).StringResult);
+
+
+            Assert.AreEqual(false, Expression.From("{num}=={range2}").Invoke(parameters).BooleanResult);
+            Assert.AreEqual(true, Expression.From("{num1}=={range2}").Invoke(parameters).BooleanResult);
+            Assert.AreEqual(true, Expression.From("{num}!={range2}").Invoke(parameters).BooleanResult);
+            Assert.AreEqual(false, Expression.From("{num1}!={range2}").Invoke(parameters).BooleanResult);
 
             Assert.AreEqual(true, Expression.From("{+}=='+'").Invoke(parameters).BooleanResult);
 
@@ -482,6 +493,16 @@ namespace HLC.Expression.Test
             Assert.AreEqual(2, Expression.From("AMATCH({strlist1}, 'bbb')").Invoke(parameters).NumberResult);
             Assert.AreEqual(-1, Expression.From("AMATCH({strlist1}, 'b')").Invoke(parameters).NumberResult);
             Assert.AreEqual(3, Expression.From("ACOUNT({strlist1})").Invoke(parameters).NumberResult);
+
+            Assert.AreEqual(70, Expression.From("ASUM({numlist3})").Invoke(parameters).NumberResult);
+            Assert.AreEqual(70, Expression.From("{numlist3}").Invoke(parameters).NumberResult);
+            Assert.AreEqual(71, Expression.From("1+{numlist3}").Invoke(parameters).NumberResult);
+            Assert.AreEqual(true, Expression.From("1<{numlist3}").Invoke(parameters).BooleanResult);
+            Assert.AreEqual(false, Expression.From("1>{numlist3}").Invoke(parameters).BooleanResult);
+            Assert.AreEqual(2, Expression.From("AINDEX({numlist3}, 3)").Invoke(parameters).NumberResult);
+            Assert.AreEqual(4, Expression.From("AMATCH({numlist3}, 3)").Invoke(parameters).NumberResult);
+            Assert.AreEqual(-1, Expression.From("AMATCH({numlist3}, 6)").Invoke(parameters).NumberResult);
+            Assert.AreEqual(14, Expression.From("ACOUNT({numlist3})").Invoke(parameters).NumberResult);
         }
     }
 }

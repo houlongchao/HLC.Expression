@@ -5,6 +5,8 @@ namespace HLC.Expression
 {
     public class RangeUtils
     {
+        private const string RangePattern = "^(?<leftBacket>[\\(\\[])(?<leftNum>-?\\d+(\\.\\d+)?) ?, ?(?<rightNum>-?\\d+(\\.\\d+)?)(?<rightBacket>[\\)\\]])$";
+
         /// <summary>
         /// 判断给定的字符串是否为一个区间字符串
         /// </summary>
@@ -12,7 +14,12 @@ namespace HLC.Expression
         /// <returns></returns>
         public static bool IsRange(string range)
         {
-            return Regex.IsMatch(range, "^(?<leftBacket>[\\(\\[])(?<leftNum>\\d+(\\.\\d+)?) ?, ?(?<rightNum>\\d+(\\.\\d+)?)(?<rightBacket>[\\)\\]])$");
+            var match = Regex.Match(range, RangePattern);
+            if (match.Success && match.Groups["leftBacket"].Success && match.Groups["leftNum"].Success && match.Groups["rightNum"].Success && match.Groups["rightBacket"].Success)
+            {
+                return Convert.ToDouble(match.Groups["leftNum"].Value) < Convert.ToDouble(match.Groups["rightNum"].Value);
+            }
+            return false;
         }
 
         /// <summary>
@@ -23,7 +30,7 @@ namespace HLC.Expression
         /// <returns></returns>
         public static bool IsInRange(double num, string range)
         {
-            var match = Regex.Match(range, "^(?<leftBacket>[\\(\\[])(?<leftNum>\\d+(\\.\\d+)?) ?, ?(?<rightNum>\\d+(\\.\\d+)?)(?<rightBacket>[\\)\\]])$");
+            var match = Regex.Match(range, RangePattern);
             if (match.Success && match.Groups["leftBacket"].Success && match.Groups["leftNum"].Success && match.Groups["rightNum"].Success && match.Groups["rightBacket"].Success)
             {
                 if (range.StartsWith("(") && Convert.ToDouble(match.Groups["leftNum"].Value) >= num)

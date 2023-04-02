@@ -275,10 +275,6 @@ namespace HLC.Expression
                         var sb = new StringBuilder();
                         foreach (var child in Children)
                         {
-                            if (child is VariableExpression ve && !parameters.ContainsKey(ve.Key))
-                            {
-                                continue;
-                            }
                             var result = child.Invoke(parameters);
                             if (result.IsList())
                             {
@@ -627,17 +623,42 @@ namespace HLC.Expression
                     }
                 case ExpressionType.ASUM:
                     {
-                        var values = Children[0].Invoke(parameters).NumberListResult;
-                        var result = values.Sum();
-                        InvokeResult = Result(result);
-                        break;
+                        var valueExpression = Children[0].Invoke(parameters);
+                        if (valueExpression.IsList())
+                        {
+                            decimal result = 0;
+                            foreach (var item in valueExpression.ListResult)
+                            {
+                                if (decimal.TryParse(item.ToString(), out var d))
+                                {
+                                    result += d;
+                                }
+                            }
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else
+                        {
+                            InvokeResult = Result(valueExpression.NumberResult);
+                            break;
+                        }
                     }
                 case ExpressionType.ACOUNT:
                     {
-                        var values = Children[0].Invoke(parameters).ListResult;
-                        var result = values.Count;
-                        InvokeResult = Result(result);
-                        break;
+                        var valueExpression = Children[0].Invoke(parameters);
+                        if (valueExpression.IsList())
+                        {
+                            var values = Children[0].Invoke(parameters).ListResult;
+                            var result = values.Count;
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else
+                        {
+                            InvokeResult = Result(1);
+                            break;
+
+                        }
                     }
                 case ExpressionType.AINDEX:
                     {
@@ -646,6 +667,12 @@ namespace HLC.Expression
                         if (index < 1)
                         {
                             InvokeResult = Result("");
+                            break;
+                        }
+
+                        if (!valueExpression.IsList())
+                        {
+                            InvokeResult = Result(valueExpression.StringResult);
                             break;
                         }
 
@@ -681,6 +708,11 @@ namespace HLC.Expression
                 case ExpressionType.AMATCH:
                     {
                         var valueExpression = Children[0].Invoke(parameters);
+                        if (!valueExpression.IsList())
+                        {
+                            InvokeResult = Result(-1);
+                            break;
+                        }
                         var matchExpression = Children[1].Invoke(parameters);
                         if (valueExpression.IsNumberList() && matchExpression.IsNumber())
                         {

@@ -211,7 +211,7 @@ namespace HLC.Expression
                             InvokeResult = Result(result);
                             break;
                         }
-                        else if (leftResult.IsNumber() && rightResult.DataType == ResultType.Range)
+                        else if (leftResult.IsNumber() && rightResult.IsRange())
                         {
                             bool result = !RangeUtils.IsInRange(leftResult.NumberResult, rightResult.ToString());
                             InvokeResult = Result(result);
