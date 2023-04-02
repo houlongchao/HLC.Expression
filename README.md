@@ -1,4 +1,8 @@
-# HLC.Expression
+# HLC.Expression 字符串表达式解析库
+[![NuGet Badge](https://buildstats.info/nuget/HLCExpression)](https://www.nuget.org/packages/HLCExpression)
+![GitHub](https://img.shields.io/github/license/houlongchao/HLC.Expression?style=social)
+
+一款支持**数学运算**，**逻辑运算**，**字符串运算**，常用**数学函数运算**以及其它常用**自定义函数**运算的工具库。
 
 ## 1. 功能说明
 
@@ -34,6 +38,10 @@
 
 `NuGet`中搜索`HLCExpression`进行安装使用
 
+``` shell
+dotnet add package HLCExpression
+```
+
 
 
 #### 3.1.2 不含参数计算
@@ -44,8 +52,7 @@ Expression.From("CEILING(50.12+1)").Invoke().NumberResult
 // 计算返回Boolean结果
 Expression.From("2.1<=1.1").Invoke().BooleanResult
 // 计算返回String结果
-Expression.From("TOSTR(DATETIME('2021-01-01'), 'yyyy-MM-dd')").Invoke().StringResult
-    
+Expression.From("TOSTR(DATETIME('2021-01-01'), 'yyyy-MM-dd')").Invoke().StringResult 
 // 更多示例见代码单元测试
 ```
 
@@ -413,7 +420,7 @@ ROUNDING(RAD(2), 6)
 ROUNDING(DEG(2), 6)
 ROUNDING(LOG(2), 6)
 ROUNDING(LOG(2,5), 6)
-    //更多请看代码单元测试
+//更多请看代码单元测试
 ```
 
 
