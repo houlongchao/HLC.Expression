@@ -63,7 +63,13 @@ namespace HLC.Expression
         /// <summary>
         /// 元数据
         /// </summary>
-        public Dictionary<string, string> Metadata { get; set; } = new Dictionary<string, string>();
+        public Metadata Metadata { get; set; } = new Metadata();
+
+        /// <summary>
+        /// 数据元数据
+        /// </summary>
+        public DataMetadata DataMetadata { get; set; } = new DataMetadata();
+
 
         public TData GetData<TData>()
         {

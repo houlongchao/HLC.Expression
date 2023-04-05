@@ -273,6 +273,11 @@
         /// </summary>
         META,
 
+        /// <summary>
+        /// 获取数据属性
+        /// </summary>
+        DATAMETA,
+
         #endregion
 
         #region 数学函数
@@ -434,6 +439,26 @@
         /// 数组数量获取
         /// </summary>
         ACOUNT,
+
+        /// <summary>
+        /// 数组最大值 AMAX(
+        /// </summary>
+        AMAX,
+
+        /// <summary>
+        /// 数组最小值 AMIN(
+        /// </summary>
+        AMIN,
+
+        /// <summary>
+        /// 数组最大相邻差 AMAXDIFF(
+        /// </summary>
+        AMAXDIFF,
+
+        /// <summary>
+        /// 数组最小相邻差 AMINDIFF(
+        /// </summary>
+        AMINDIFF,
 
         #endregion
     }

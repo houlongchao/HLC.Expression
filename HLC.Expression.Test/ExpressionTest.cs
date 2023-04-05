@@ -57,6 +57,8 @@ namespace HLC.Expression.Test
             parameters["metadata"].Metadata["meta01"] = "value01";
             parameters["metadata"].Metadata["meta02"] = "True";
             parameters["metadata"].Metadata["meta03"] = "123";
+            parameters["metadata"].DataMetadata["metadataValue", "name"] = "metadataName";
+
 
             return parameters;
         }
@@ -469,6 +471,9 @@ namespace HLC.Expression.Test
             Assert.AreEqual(true, Expression.From("META({metadata}, 'meta02', 'bool') == true").Invoke(parameters).BooleanResult);
             Assert.AreEqual(true, Expression.From("META({metadata}, 'meta03', 'num') == 123").Invoke(parameters).BooleanResult);
 
+            Assert.AreEqual(true, Expression.From("DATAMETA({metadata}, 'name') == 'metadataName'").Invoke(parameters).BooleanResult);
+            Assert.AreEqual("", Expression.From("DATAMETA({metadata}, 'name2')").Invoke(parameters).StringResult);
+            Assert.AreEqual("", Expression.From("DATAMETA({metadata2}, 'name2')").Invoke(parameters).StringResult);
         }
 
         [Test(Description = "测试除0")]
@@ -503,6 +508,10 @@ namespace HLC.Expression.Test
             Assert.AreEqual(4, Expression.From("AMATCH({numlist3}, 3)").Invoke(parameters).NumberResult);
             Assert.AreEqual(-1, Expression.From("AMATCH({numlist3}, 6)").Invoke(parameters).NumberResult);
             Assert.AreEqual(14, Expression.From("ACOUNT({numlist3})").Invoke(parameters).NumberResult);
+            Assert.AreEqual(5, Expression.From("AMAX({numlist1})").Invoke(parameters).NumberResult);
+            Assert.AreEqual(0, Expression.From("AMIN({numlist1})").Invoke(parameters).NumberResult);
+            Assert.AreEqual(11, Expression.From("AMAXDIFF({numlist2})").Invoke(parameters).NumberResult);
+            Assert.AreEqual(0, Expression.From("AMINDIFF({numlist2})").Invoke(parameters).NumberResult);
         }
     }
 }

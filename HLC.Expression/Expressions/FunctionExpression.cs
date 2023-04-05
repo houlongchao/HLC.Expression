@@ -22,6 +22,8 @@ namespace HLC.Expression
         {
             switch (Type)
             {
+                #region 非函数，不处理
+
                 case ExpressionType.Data:
                 case ExpressionType.Variable:
                 case ExpressionType.StringConstant:
@@ -42,12 +44,67 @@ namespace HLC.Expression
                 case ExpressionType.Modulo:
                 case ExpressionType.BooleanAnd:
                 case ExpressionType.BooleanOr:
+                    {
+                        // 非函数，不处理
+                        break;
+                    }
+
+                #endregion
+
+                #region 判断函数
+
+                case ExpressionType.If:
+                    {
+                        if (Children[0] is VariableExpression ve && !parameters.ContainsKey(ve.Key))
+                        {
+                            InvokeResult = Children[2].Invoke(parameters);
+                            break;
+                        }
+
+                        ResultExpression conditionInvoke = Children[0].Invoke(parameters);
+                        if (conditionInvoke.BooleanResult)
+                        {
+                            InvokeResult = Children[1].Invoke(parameters);
+                            break;
+                        }
+                        else
+                        {
+                            InvokeResult = Children[2].Invoke(parameters);
+                            break;
+                        }
+                    }
                 case ExpressionType.Switch:
                 case ExpressionType.SwitchC:
                     {
-                        // 上面这些不属于这个模块，所以永远不会进入这里
-                        // 添加上这些是为了在代码生成时可以忽略上面这些
-                        throw new NotSupportedException($"Not Supported {Type} in FunctionExpression");
+                        // switch 有专门的处理类
+                        break;
+                    }
+
+                #endregion
+
+                #region 数值函数
+
+                case ExpressionType.Rounding:
+                    {
+                        var value = Children[0].Invoke(parameters).NumberResult;
+                        var digits = Children[1].Invoke(parameters).NumberResult;
+                        var result = Math.Round(value, (int)digits, MidpointRounding.AwayFromZero);
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.Ceiling:
+                    {
+                        ResultExpression invoke = Children[0].Invoke(parameters);
+                        var result = invoke.NumberResult;
+                        InvokeResult = Result(Math.Ceiling(result));
+                        break;
+                    }
+                case ExpressionType.Flooring:
+                    {
+                        ResultExpression invoke = Children[0].Invoke(parameters);
+                        var result = invoke.NumberResult;
+                        InvokeResult = Result(Math.Floor(result));
+                        break;
                     }
                 case ExpressionType.Max:
                     {
@@ -67,6 +124,167 @@ namespace HLC.Expression
                             min = Math.Min(min, Children[i].Invoke(parameters).NumberResult);
                         }
                         InvokeResult = Result(min);
+                        break;
+                    }
+
+                #endregion
+
+                #region 文本函数
+
+                case ExpressionType.Concat:
+                    {
+                        var sb = new StringBuilder();
+                        foreach (var child in Children)
+                        {
+                            var result = child.Invoke(parameters);
+                            if (result.IsList())
+                            {
+                                foreach (var item in result.ListResult)
+                                {
+                                    sb.Append(item);
+                                }
+                            }
+                            else
+                            {
+                                sb.Append(result.Data);
+                            }
+                        }
+                        InvokeResult = Result(sb.ToString());
+                        break;
+                    }
+                case ExpressionType.SubStr:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var startIndex = Children[1].Invoke(parameters).NumberResult;
+                        if (Children.Count > 2)
+                        {
+                            var length = Children[2].Invoke(parameters).NumberResult;
+                            var result = value.Substring((int)startIndex, (int)length);
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else
+                        {
+                            var result = value.Substring((int)startIndex);
+                            InvokeResult = Result(result);
+                            break;
+                        }
+
+                    }
+                case ExpressionType.SubNum:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var startIndex = Children[1].Invoke(parameters).NumberResult;
+                        if (Children.Count > 2)
+                        {
+                            var length = Children[2].Invoke(parameters).NumberResult;
+                            var substr = value.Substring((int)startIndex, (int)length);
+                            var result = decimal.Parse(substr);
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else
+                        {
+                            var substr = value.Substring((int)startIndex);
+                            var result = decimal.Parse(substr);
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                    }
+                case ExpressionType.Left:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var length = Children[1].Invoke(parameters).NumberResult;
+                        var result = value.Substring(0, (int)length);
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.Right:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var length = Children[1].Invoke(parameters).NumberResult;
+                        var result = value.Substring(value.Length - (int)length);
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.Reverse:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var result = string.Join("", value.Reverse());
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.Length:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var result = value.Length;
+                        InvokeResult = Result(result);
+                        break;
+                    }
+                case ExpressionType.FIND:
+                    {
+                        var value = Children[0].Invoke(parameters).StringResult;
+                        var matchValue = Children[1].Invoke(parameters).StringResult;
+                        var result = value.IndexOf(matchValue);
+                        InvokeResult = Result(result);
+                        break;
+                    }
+
+                #endregion
+
+                #region 逻辑函数
+
+                case ExpressionType.Not:
+                    {
+                        if (Children[0] is VariableExpression ve && !parameters.ContainsKey(ve.Key))
+                        {
+                            InvokeResult = Result(true);
+                            break;
+                        }
+                        else
+                        {
+                            ResultExpression invoke = Children[0].Invoke(parameters);
+                            var result = invoke.BooleanResult;
+                            InvokeResult = Result(!result);
+                        }
+
+                        break;
+                    }
+                case ExpressionType.FunctionAnd:
+                    {
+                        InvokeResult = Result(true);
+                        foreach (var child in Children)
+                        {
+                            if (child is VariableExpression ve && !parameters.ContainsKey(ve.Key))
+                            {
+                                InvokeResult = Result(false);
+                                break;
+                            }
+
+                            if (!child.Invoke(parameters).BooleanResult)
+                            {
+                                InvokeResult = Result(false);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                case ExpressionType.FunctionOr:
+                    {
+                        InvokeResult = Result(false);
+                        foreach (var child in Children)
+                        {
+                            if (child is VariableExpression ve && !parameters.ContainsKey(ve.Key))
+                            {
+                                continue;
+                            }
+
+                            if (child.Invoke(parameters).BooleanResult)
+                            {
+                                InvokeResult = Result(true);
+                                break;
+                            }
+                        }
                         break;
                     }
                 case ExpressionType.In:
@@ -145,44 +363,6 @@ namespace HLC.Expression
                         }
                         break;
                     }
-                case ExpressionType.Rounding:
-                    {
-                        var value = Children[0].Invoke(parameters).NumberResult;
-                        var digits = Children[1].Invoke(parameters).NumberResult;
-                        var result = Math.Round(value, (int)digits, MidpointRounding.AwayFromZero);
-                        InvokeResult = Result(result);
-                        break;
-                    }
-                case ExpressionType.Ceiling:
-                    {
-                        ResultExpression invoke = Children[0].Invoke(parameters);
-                        var result = invoke.NumberResult;
-                        InvokeResult = Result(Math.Ceiling(result));
-                        break;
-                    }
-                case ExpressionType.Flooring:
-                    {
-                        ResultExpression invoke = Children[0].Invoke(parameters);
-                        var result = invoke.NumberResult;
-                        InvokeResult = Result(Math.Floor(result));
-                        break;
-                    }
-                case ExpressionType.Not:
-                    {
-                        if (Children[0] is VariableExpression ve && !parameters.ContainsKey(ve.Key))
-                        {
-                            InvokeResult = Result(true);
-                            break;
-                        }
-                        else
-                        {
-                            ResultExpression invoke = Children[0].Invoke(parameters);
-                            var result = invoke.BooleanResult;
-                            InvokeResult = Result(!result);
-                        }
-
-                        break;
-                    }
                 case ExpressionType.HasValue:
                     {
                         if (Children[0] is VariableExpression ve)
@@ -213,123 +393,35 @@ namespace HLC.Expression
                         InvokeResult = Result(result);
                         break;
                     }
-                case ExpressionType.If:
+                case ExpressionType.IsStart:
                     {
-                        if (Children[0] is VariableExpression ve && !parameters.ContainsKey(ve.Key))
-                        {
-                            InvokeResult = Children[2].Invoke(parameters);
-                            break;
-                        }
-
-                        ResultExpression conditionInvoke = Children[0].Invoke(parameters);
-                        if (conditionInvoke.BooleanResult)
-                        {
-                            InvokeResult = Children[1].Invoke(parameters);
-                            break;
-                        }
-                        else
-                        {
-                            InvokeResult = Children[2].Invoke(parameters);
-                            break;
-                        }
-                    }
-                case ExpressionType.FunctionAnd:
-                    {
-                        InvokeResult = Result(true);
-                        foreach (var child in Children)
-                        {
-                            if (child is VariableExpression ve && !parameters.ContainsKey(ve.Key))
-                            {
-                                InvokeResult = Result(false);
-                                break;
-                            }
-
-                            if (!child.Invoke(parameters).BooleanResult)
-                            {
-                                InvokeResult = Result(false);
-                                break;
-                            }
-                        }
+                        var valueExpression = Children[0].Invoke(parameters);
+                        var matchExpression = Children[1].Invoke(parameters);
+                        var result = valueExpression.StringResult.StartsWith(matchExpression.StringResult);
+                        InvokeResult = Result(result);
                         break;
                     }
-                case ExpressionType.FunctionOr:
+                case ExpressionType.IsEnd:
                     {
-                        InvokeResult = Result(false);
-                        foreach (var child in Children)
-                        {
-                            if (child is VariableExpression ve && !parameters.ContainsKey(ve.Key))
-                            {
-                                continue;
-                            }
-
-                            if (child.Invoke(parameters).BooleanResult)
-                            {
-                                InvokeResult = Result(true);
-                                break;
-                            }
-                        }
+                        var valueExpression = Children[0].Invoke(parameters);
+                        var matchExpression = Children[1].Invoke(parameters);
+                        var result = valueExpression.StringResult.EndsWith(matchExpression.StringResult);
+                        InvokeResult = Result(result);
                         break;
                     }
-                case ExpressionType.Concat:
+                case ExpressionType.IsMatch:
                     {
-                        var sb = new StringBuilder();
-                        foreach (var child in Children)
-                        {
-                            var result = child.Invoke(parameters);
-                            if (result.IsList())
-                            {
-                                foreach (var item in result.ListResult)
-                                {
-                                    sb.Append(item);
-                                }
-                            }
-                            else
-                            {
-                                sb.Append(result.Data);
-                            }
-                        }
-                        InvokeResult = Result(sb.ToString());
+                        var valueExpression = Children[0].Invoke(parameters);
+                        var matchExpression = Children[1].Invoke(parameters);
+                        var result = Regex.IsMatch(valueExpression.StringResult, matchExpression.StringResult);
+                        InvokeResult = Result(result);
                         break;
                     }
-                case ExpressionType.SubStr:
-                    {
-                        var value = Children[0].Invoke(parameters).StringResult;
-                        var startIndex = Children[1].Invoke(parameters).NumberResult;
-                        if (Children.Count > 2)
-                        {
-                            var length = Children[2].Invoke(parameters).NumberResult;
-                            var result = value.Substring((int)startIndex, (int)length);
-                            InvokeResult = Result(result);
-                            break;
-                        }
-                        else
-                        {
-                            var result = value.Substring((int)startIndex);
-                            InvokeResult = Result(result);
-                            break;
-                        }
 
-                    }
-                case ExpressionType.SubNum:
-                    {
-                        var value = Children[0].Invoke(parameters).StringResult;
-                        var startIndex = Children[1].Invoke(parameters).NumberResult;
-                        if (Children.Count > 2)
-                        {
-                            var length = Children[2].Invoke(parameters).NumberResult;
-                            var substr = value.Substring((int)startIndex, (int)length);
-                            var result = decimal.Parse(substr);
-                            InvokeResult = Result(result);
-                            break;
-                        }
-                        else
-                        {
-                            var substr = value.Substring((int)startIndex);
-                            var result = decimal.Parse(substr);
-                            InvokeResult = Result(result);
-                            break;
-                        }
-                    }
+                #endregion
+
+                #region 参数函数
+
                 case ExpressionType.DateTime:
                     {
                         var value = Children[0].Invoke(parameters).StringResult;
@@ -393,6 +485,111 @@ namespace HLC.Expression
                         }
                         break;
                     }
+                case ExpressionType.META:
+                    {
+                        var value = Children[0] as VariableExpression;
+                        if (!parameters.ContainsKey(value.Key))
+                        {
+                            InvokeResult = new ResultExpression(ResultType.Empty, null);
+                            break;
+                        }
+                        var parameter = parameters[value.Key];
+
+                        var metadata = Children[1] as ConstantExpression;
+
+                        var formate = "txt";
+                        if (Children.Count > 2)
+                        {
+                            formate = (Children[2] as ConstantExpression).Value.ToString();
+                        }
+
+                        if (!parameter.Metadata.TryGetValue(metadata.Value.ToString(), out string v))
+                        {
+                            if (ExpressionSetting.Instance.CheckVariableExist)
+                            {
+                                throw new ExpressionParameterException(value.Key, $"Not Found Metadata {metadata.Value}");
+                            }
+
+                            InvokeResult = new ResultExpression(ResultType.Empty, null);
+                            break;
+                        }
+
+                        switch (formate)
+                        {
+                            case "bool":
+                                {
+                                    InvokeResult = Result(Convert.ToBoolean(v));
+                                    break;
+                                }
+                            case "num":
+                                {
+                                    InvokeResult = Result(Convert.ToDecimal(v));
+                                    break;
+                                }
+                            case "txt":
+                            default:
+                                {
+                                    InvokeResult = Result(v);
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case ExpressionType.DATAMETA:
+                    {
+                        var value = Children[0] as VariableExpression;
+                        if (!parameters.ContainsKey(value.Key))
+                        {
+                            InvokeResult = new ResultExpression(ResultType.Empty, null);
+                            break;
+                        }
+                        var parameter = parameters[value.Key];
+
+                        var metadata = Children[1] as ConstantExpression;
+
+                        var formate = "txt";
+                        if (Children.Count > 2)
+                        {
+                            formate = (Children[2] as ConstantExpression).Value.ToString();
+                        }
+
+                        if (!parameter.DataMetadata.TryGetDataValue(parameter.Data.ToString(), metadata.Value.ToString(), out string v))
+                        {
+                            if (ExpressionSetting.Instance.CheckVariableExist)
+                            {
+                                throw new ExpressionParameterException(value.Key, $"Not Found DataMetadata {parameter.Data} {metadata.Value}");
+                            }
+
+                            InvokeResult = new ResultExpression(ResultType.Empty, null);
+                            break;
+                        }
+
+                        switch (formate)
+                        {
+                            case "bool":
+                                {
+                                    InvokeResult = Result(Convert.ToBoolean(v));
+                                    break;
+                                }
+                            case "num":
+                                {
+                                    InvokeResult = Result(Convert.ToDecimal(v));
+                                    break;
+                                }
+                            case "txt":
+                            default:
+                                {
+                                    InvokeResult = Result(v);
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+
+                #endregion
+
+                #region 数学函数
+
                 case ExpressionType.ABS:
                     {
                         var value = Children[0].Invoke(parameters).NumberResult;
@@ -538,89 +735,11 @@ namespace HLC.Expression
                         InvokeResult = Result((decimal)Math.PI);
                         break;
                     }
-                case ExpressionType.META:
-                    {
-                        var value = Children[0] as VariableExpression;
-                        var parameter = parameters[value.Key];
 
-                        var metadata = Children[1] as ConstantExpression;
+                #endregion
 
-                        var formate = "txt";
-                        if (Children.Count > 2)
-                        {
-                            formate = (Children[2] as ConstantExpression).Value.ToString();
-                        }
+                #region 数组函数
 
-                        if (!parameter.Metadata.TryGetValue(metadata.Value.ToString(), out string v))
-                        {
-                            if (ExpressionSetting.Instance.CheckVariableExist)
-                            {
-                                throw new ExpressionParameterException(value.Key, $"Not Found Metadata {metadata.Value}");
-                            }
-
-                            InvokeResult = new ResultExpression(ResultType.Empty, null);
-                            break;
-                        }
-
-                        switch (formate)
-                        {
-                            case "bool":
-                                {
-                                    InvokeResult = Result(Convert.ToBoolean(v));
-                                    break;
-                                }
-                            case "num":
-                                {
-                                    InvokeResult = Result(Convert.ToDecimal(v));
-                                    break;
-                                }
-                            case "txt":
-                            default:
-                                {
-                                    InvokeResult = Result(v);
-                                    break;
-                                }
-                        }
-                        break;
-                    }
-                case ExpressionType.Left:
-                    {
-                        var value = Children[0].Invoke(parameters).StringResult;
-                        var length = Children[1].Invoke(parameters).NumberResult;
-                        var result = value.Substring(0, (int)length);
-                        InvokeResult = Result(result);
-                        break;
-                    }
-                case ExpressionType.Right:
-                    {
-                        var value = Children[0].Invoke(parameters).StringResult;
-                        var length = Children[1].Invoke(parameters).NumberResult;
-                        var result = value.Substring(value.Length - (int)length);
-                        InvokeResult = Result(result);
-                        break;
-                    }
-                case ExpressionType.Reverse:
-                    {
-                        var value = Children[0].Invoke(parameters).StringResult;
-                        var result = string.Join("", value.Reverse());
-                        InvokeResult = Result(result);
-                        break;
-                    }
-                case ExpressionType.Length:
-                    {
-                        var value = Children[0].Invoke(parameters).StringResult;
-                        var result = value.Length;
-                        InvokeResult = Result(result);
-                        break;
-                    }
-                case ExpressionType.FIND:
-                    {
-                        var value = Children[0].Invoke(parameters).StringResult;
-                        var matchValue = Children[1].Invoke(parameters).StringResult;
-                        var result = value.IndexOf(matchValue);
-                        InvokeResult = Result(result);
-                        break;
-                    }
                 case ExpressionType.ASUM:
                     {
                         var valueExpression = Children[0].Invoke(parameters);
@@ -648,7 +767,7 @@ namespace HLC.Expression
                         var valueExpression = Children[0].Invoke(parameters);
                         if (valueExpression.IsList())
                         {
-                            var values = Children[0].Invoke(parameters).ListResult;
+                            var values = valueExpression.ListResult;
                             var result = values.Count;
                             InvokeResult = Result(result);
                             break;
@@ -743,30 +862,109 @@ namespace HLC.Expression
                             break;
                         }
                     }
-                case ExpressionType.IsStart:
+                case ExpressionType.AMAX:
                     {
                         var valueExpression = Children[0].Invoke(parameters);
-                        var matchExpression = Children[1].Invoke(parameters);
-                        var result = valueExpression.StringResult.StartsWith(matchExpression.StringResult);
-                        InvokeResult = Result(result);
-                        break;
+                        if (valueExpression.IsList())
+                        {
+                            var values = valueExpression.ListResult;
+                            if (values.Count <= 0)
+                            {
+                                InvokeResult = Result(0);
+                                break;
+                            }
+                            var result = values[0].ToDecimal(0);
+                            foreach (var item in values)
+                            {
+                                result = Math.Max(item.ToDecimal(0), result);
+                            }
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else
+                        {
+                            InvokeResult = Result(valueExpression.NumberResult);
+                            break;
+                        }
                     }
-                case ExpressionType.IsEnd:
+                case ExpressionType.AMIN:
                     {
                         var valueExpression = Children[0].Invoke(parameters);
-                        var matchExpression = Children[1].Invoke(parameters);
-                        var result = valueExpression.StringResult.EndsWith(matchExpression.StringResult);
-                        InvokeResult = Result(result);
-                        break;
+                        if (valueExpression.IsList())
+                        {
+                            var values = valueExpression.ListResult;
+                            if (values.Count <= 0)
+                            {
+                                InvokeResult = Result(0);
+                                break;
+                            }
+                            var result = values[0].ToDecimal(0);
+                            foreach (var item in values)
+                            {
+                                result = Math.Min(item.ToDecimal(0), result);
+                            }
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else
+                        {
+                            InvokeResult = Result(valueExpression.NumberResult);
+                            break;
+                        }
                     }
-                case ExpressionType.IsMatch:
+                case ExpressionType.AMAXDIFF:
                     {
                         var valueExpression = Children[0].Invoke(parameters);
-                        var matchExpression = Children[1].Invoke(parameters);
-                        var result = Regex.IsMatch(valueExpression.StringResult, matchExpression.StringResult);
-                        InvokeResult = Result(result);
-                        break;
+                        if (valueExpression.IsList())
+                        {
+                            var values = valueExpression.ListResult;
+                            if (values.Count <= 1)
+                            {
+                                InvokeResult = Result(0);
+                                break;
+                            }
+                            decimal result = 0;
+                            for (int i = 1; i < values.Count; i++)
+                            {
+                                result = Math.Max(Math.Abs(values[i].ToDecimal(0) - values[i - 1].ToDecimal(0)), result);
+                            }
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else
+                        {
+                            InvokeResult = Result(0);
+                            break;
+                        }
                     }
+                case ExpressionType.AMINDIFF:
+                    {
+                        var valueExpression = Children[0].Invoke(parameters);
+                        if (valueExpression.IsList())
+                        {
+                            var values = valueExpression.ListResult;
+                            if (values.Count <= 1)
+                            {
+                                InvokeResult = Result(0);
+                                break;
+                            }
+                            decimal result = decimal.MaxValue;
+                            for (int i = 1; i < values.Count; i++)
+                            {
+                                result = Math.Min(Math.Abs(values[i].ToDecimal(0) - values[i - 1].ToDecimal(0)), result);
+                            }
+                            InvokeResult = Result(result);
+                            break;
+                        }
+                        else
+                        {
+                            InvokeResult = Result(0);
+                            break;
+                        }
+                    }
+
+                #endregion
+
                 default:
                     {
                         throw new NotSupportedException($"Not Supported {Type} in FunctionExpression");
@@ -781,6 +979,8 @@ namespace HLC.Expression
             StringBuilder sb = new StringBuilder();
             switch (this.Type)
             {
+                #region 非函数，不处理
+
                 case ExpressionType.Data:
                 case ExpressionType.Variable:
                 case ExpressionType.StringConstant:
@@ -801,11 +1001,30 @@ namespace HLC.Expression
                 case ExpressionType.Modulo:
                 case ExpressionType.BooleanAnd:
                 case ExpressionType.BooleanOr:
+                    {
+                        // 非函数，不处理
+                        break;
+                    }
+
+                #endregion
+
+                #region 判断函数
+
+                case ExpressionType.If:
+                    {
+                        return $"IF({Children[0]}, {Children[1]}, {Children[2]})";
+                    }
                 case ExpressionType.Switch:
                 case ExpressionType.SwitchC:
                     {
-                        throw new NotSupportedException($"Not Supported {Type} in FunctionExpression");
+                        // switch 有专门的处理类
+                        break;
                     }
+
+                #endregion
+
+                #region 数值函数
+
                 case ExpressionType.Ceiling:
                     {
                         return $"CEILING({Children.FirstOrDefault()})";
@@ -828,29 +1047,11 @@ namespace HLC.Expression
                         sb.Append("MIN(");
                         break;
                     }
-                case ExpressionType.FunctionAnd:
-                    {
-                        sb.Append("AND(");
-                        break;
-                    }
-                case ExpressionType.FunctionOr:
-                    {
-                        sb.Append("OR(");
-                        break;
-                    }
-                case ExpressionType.Not:
-                    {
-                        return $"NOT({Children.FirstOrDefault()})";
-                    }
-                case ExpressionType.If:
-                    {
-                        return $"IF({Children[0]}, {Children[1]}, {Children[2]})";
-                    }
-                case ExpressionType.In:
-                    {
-                        sb.Append("IN(");
-                        break;
-                    }
+
+                #endregion
+
+                #region 文本函数
+
                 case ExpressionType.Concat:
                     {
                         sb.Append("CONCAT(");
@@ -864,9 +1065,55 @@ namespace HLC.Expression
                     {
                         return $"SUBNUM({Children[0]}, {Children[1]}, {Children[2]})";
                     }
-                case ExpressionType.DateTime:
+
+                case ExpressionType.Left:
                     {
-                        sb.Append("DATETIME(");
+                        sb.Append("LEFT(");
+                        break;
+                    }
+                case ExpressionType.Right:
+                    {
+                        sb.Append("RIGHT(");
+                        break;
+                    }
+                case ExpressionType.Reverse:
+                    {
+                        sb.Append("REVERSE(");
+                        break;
+                    }
+                case ExpressionType.FIND:
+                    {
+                        sb.Append("FIND(");
+                        break;
+                    }
+                case ExpressionType.Length:
+                    {
+                        sb.Append("LENGTH(");
+                        break;
+                    }
+
+                #endregion
+
+                #region 逻辑函数
+
+
+                case ExpressionType.Not:
+                    {
+                        return $"NOT({Children.FirstOrDefault()})";
+                    }
+                case ExpressionType.FunctionAnd:
+                    {
+                        sb.Append("AND(");
+                        break;
+                    }
+                case ExpressionType.FunctionOr:
+                    {
+                        sb.Append("OR(");
+                        break;
+                    }
+                case ExpressionType.In:
+                    {
+                        sb.Append("IN(");
                         break;
                     }
                 case ExpressionType.HasValue:
@@ -877,6 +1124,31 @@ namespace HLC.Expression
                     {
                         return $"ISNUMBER({Children.FirstOrDefault()})";
                     }
+                case ExpressionType.IsStart:
+                    {
+                        sb.Append("ISSTART(");
+                        break;
+                    }
+                case ExpressionType.IsEnd:
+                    {
+                        sb.Append("ISEND(");
+                        break;
+                    }
+                case ExpressionType.IsMatch:
+                    {
+                        sb.Append("ISMATCH(");
+                        break;
+                    }
+
+                #endregion
+
+                #region 参数函数
+
+                case ExpressionType.DateTime:
+                    {
+                        sb.Append("DATETIME(");
+                        break;
+                    }
                 case ExpressionType.Get:
                     {
                         return $"GET({Children[0]}, {Children[1]})";
@@ -885,11 +1157,31 @@ namespace HLC.Expression
                     {
                         return $"ASNUM({Children[0]})";
                     }
+                case ExpressionType.ToNum:
+                    {
+                        sb.Append("TONUM(");
+                        break;
+                    }
                 case ExpressionType.ToStr:
                     {
                         sb.Append("TOSTR(");
                         break;
                     }
+                case ExpressionType.META:
+                    {
+                        sb.Append("META(");
+                        break;
+                    }
+                case ExpressionType.DATAMETA:
+                    {
+                        sb.Append("DATAMETA(");
+                        break;
+                    }
+
+                #endregion
+
+                #region 数学函数
+
                 case ExpressionType.ABS:
                     {
                         return $"ABS({Children[0]})";
@@ -992,11 +1284,11 @@ namespace HLC.Expression
                     {
                         return $"PI()";
                     }
-                case ExpressionType.META:
-                    {
-                        sb.Append("META(");
-                        break;
-                    }
+
+                #endregion
+
+                #region 数组函数
+
                 case ExpressionType.ASUM:
                     {
                         sb.Append("ASUM(");
@@ -1017,51 +1309,29 @@ namespace HLC.Expression
                         sb.Append("ACOUNT(");
                         break;
                     }
-                case ExpressionType.ToNum:
+                case ExpressionType.AMAX:
                     {
-                        sb.Append("TONUM(");
+                        sb.Append("AMAX(");
                         break;
                     }
-                case ExpressionType.Left:
+                case ExpressionType.AMIN:
                     {
-                        sb.Append("LEFT(");
+                        sb.Append("AMIN(");
                         break;
                     }
-                case ExpressionType.Right:
+                case ExpressionType.AMAXDIFF:
                     {
-                        sb.Append("RIGHT(");
+                        sb.Append("AMAXDIFF(");
                         break;
                     }
-                case ExpressionType.Reverse:
+                case ExpressionType.AMINDIFF:
                     {
-                        sb.Append("REVERSE(");
+                        sb.Append("AMINDIFF(");
                         break;
                     }
-                case ExpressionType.FIND:
-                    {
-                        sb.Append("FIND(");
-                        break;
-                    }
-                case ExpressionType.Length:
-                    {
-                        sb.Append("LENGTH(");
-                        break;
-                    }
-                case ExpressionType.IsStart:
-                    {
-                        sb.Append("ISSTART(");
-                        break;
-                    }
-                case ExpressionType.IsEnd:
-                    {
-                        sb.Append("ISEND(");
-                        break;
-                    }
-                case ExpressionType.IsMatch:
-                    {
-                        sb.Append("ISMATCH(");
-                        break;
-                    }
+
+                #endregion
+
                 default:
                     {
                         throw new NotSupportedException($"Not Supported {Type} in FunctionExpression");

@@ -145,6 +145,12 @@ namespace HLC.Expression
                     Input = "输入参数必须为2个或3个，第一个为变量，第二个为属性名字符串，第三个可选为转换类型('bool','num', 'txt'),不传或其它输入时默认为txt",
                     Output = "属性值",
                 },
+                new Item(Value, "DATAMETA()", "获取数据属性信息")
+                {
+                    Demo = "DATAMETA({OPT:A}, 'meta01')   DATAMETA({OPT:A}, 'meta01', 'bool')",
+                    Input = "输入参数必须为2个或3个，第一个为变量，第二个为属性名字符串，第三个可选为转换类型('bool','num', 'txt'),不传或其它输入时默认为txt",
+                    Output = "数据的属性值",
+                },
                 new Item(Value, "TONUM()", "转为数字")
                 {
                     Demo = "TONUM({OPT:NUM1})   TONUM('123')",
@@ -408,13 +414,13 @@ namespace HLC.Expression
                 new Item(Array, "ASUM()", "数组求和")
                 {
                     Demo = "ASUM({Array})",
-                    Input = "数值数组参数，或者结果未数值数组的表达式",
+                    Input = "数值数组参数，或者结果为数值数组的表达式",
                     Output = "数值。输出输入数值数值参数的求和。"
                 },
                 new Item(Array, "ACOUNT()", "数组长度")
                 {
                     Demo = "ACOUNT({Array})  ACOUNT({Array})",
-                    Input = "数值数组参数，或者结果未数值数组的表达式",
+                    Input = "数值数组参数，或者结果为数值数组的表达式",
                     Output = "整数。输出输入数组的长度。"
                 },
                 new Item(Array, "AINDEX()", "获取指定下标数据")
@@ -428,6 +434,30 @@ namespace HLC.Expression
                     Demo = "AMATCH({Array}, 100)  AMATCH({Array}, '123')",
                     Input = "输入参数必须2个。第一个为数组参数，或结果为数组的表达式，第二个为要匹配的数据",
                     Output = "整数。输出匹配到的数据下标。没匹配到返回-1 。"
+                },
+                new Item(Array, "AMAX()", "数组最大值")
+                {
+                    Demo = "AMAX({Array})",
+                    Input = "数值数组参数，或者结果为数值数组的表达式",
+                    Output = "数值。输出数组中的最大值 。"
+                },
+                new Item(Array, "AMIN()", "数组最小值")
+                {
+                    Demo = "AMIN({Array})",
+                    Input = "数值数组参数，或者结果为数值数组的表达式",
+                    Output = "数值。输出数组中的最小值。"
+                },
+                new Item(Array, "AMAXDIFF()", "数组最大相邻差")
+                {
+                    Demo = "AMAXDIFF({Array})",
+                    Input = "数值数组参数，或者结果为数值数组的表达式",
+                    Output = "数值。输出数组中向量两参数差中的最大值。"
+                },
+                new Item(Array, "AMINDIFF()", "数组最小相邻差")
+                {
+                    Demo = "AMINDIFF({Array})",
+                    Input = "数值数组参数，或者结果为数值数组的表达式",
+                    Output = "数值。输出数组中向量两参数差中的最小值。"
                 },
             };
         }

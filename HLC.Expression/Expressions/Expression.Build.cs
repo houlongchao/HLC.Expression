@@ -642,6 +642,8 @@ namespace HLC.Expression
 
         #region 私有解析构建表达式方法
 
+        #region 二元运算构建
+
         /// <summary>
         /// 分析构建二元运算符，里面会比较二元运算符优先级
         /// </summary>
@@ -803,6 +805,10 @@ namespace HLC.Expression
             return false;
         }
 
+        #endregion
+
+        #region 函数构建
+
         /// <summary>
         /// 尝试解析函数运算符
         /// </summary>
@@ -812,21 +818,28 @@ namespace HLC.Expression
         /// <returns></returns>
         private static int TryFunctionBuild(string formula, int index, Stack<Operator> operatorStack)
         {
-            if (index + 4 < formula.Length && formula.Substring(index, 4).Equals("NOT("))
+            #region 判断函数
+
+            if (index + 3 < formula.Length && formula.Substring(index, 3).Equals("IF("))
             {
-                operatorStack.Push(Operator.Not);
-                return index + 4;
+                operatorStack.Push(Operator.If);
+                return index + 3;
             }
-            if (index + 9 < formula.Length && formula.Substring(index, 9).Equals("HASVALUE("))
+            if (index + 7 < formula.Length && formula.Substring(index, 7).Equals("SWITCH("))
             {
-                operatorStack.Push(Operator.HasValue);
-                return index + 9;
+                operatorStack.Push(Operator.Switch);
+                return index + 7;
             }
-            if (index + 9 < formula.Length && formula.Substring(index, 9).Equals("ISNUMBER("))
+            if (index + 8 < formula.Length && formula.Substring(index, 8).Equals("SWITCHC("))
             {
-                operatorStack.Push(Operator.IsNumber);
-                return index + 9;
+                operatorStack.Push(Operator.SwitchC);
+                return index + 8;
             }
+
+            #endregion
+
+            #region 数值函数
+
             if (index + 8 < formula.Length && formula.Substring(index, 8).Equals("CEILING("))
             {
                 operatorStack.Push(Operator.Ceiling);
@@ -852,10 +865,60 @@ namespace HLC.Expression
                 operatorStack.Push(Operator.Min);
                 return index + 4;
             }
-            if (index + 3 < formula.Length && formula.Substring(index, 3).Equals("IF("))
+
+            #endregion
+
+            #region 文本函数
+
+            if (index + 7 < formula.Length && formula.Substring(index, 7).Equals("CONCAT("))
             {
-                operatorStack.Push(Operator.If);
-                return index + 3;
+                operatorStack.Push(Operator.Concat);
+                return index + 7;
+            }
+            if (index + 7 < formula.Length && formula.Substring(index, 7).Equals("SUBSTR("))
+            {
+                operatorStack.Push(Operator.SubStr);
+                return index + 7;
+            }
+            if (index + 7 < formula.Length && formula.Substring(index, 7).Equals("SUBNUM("))
+            {
+                operatorStack.Push(Operator.SubNum);
+                return index + 7;
+            }
+            if (index + 5 < formula.Length && formula.Substring(index, 5).Equals("LEFT("))
+            {
+                operatorStack.Push(Operator.Left);
+                return index + 5;
+            }
+            if (index + 6 < formula.Length && formula.Substring(index, 6).Equals("RIGHT("))
+            {
+                operatorStack.Push(Operator.Right);
+                return index + 6;
+            }
+            if (index + 8 < formula.Length && formula.Substring(index, 8).Equals("REVERSE("))
+            {
+                operatorStack.Push(Operator.Reverse);
+                return index + 8;
+            }
+            if (index + 5 < formula.Length && formula.Substring(index, 5).Equals("FIND("))
+            {
+                operatorStack.Push(Operator.FIND);
+                return index + 5;
+            }
+            if (index + 7 < formula.Length && formula.Substring(index, 7).Equals("LENGTH("))
+            {
+                operatorStack.Push(Operator.Length);
+                return index + 7;
+            }
+
+            #endregion
+
+            #region 逻辑函数
+
+            if (index + 4 < formula.Length && formula.Substring(index, 4).Equals("NOT("))
+            {
+                operatorStack.Push(Operator.Not);
+                return index + 4;
             }
             if (index + 3 < formula.Length && formula.Substring(index, 3).Equals("IN("))
             {
@@ -872,31 +935,36 @@ namespace HLC.Expression
                 operatorStack.Push(Operator.FunctionOr);
                 return index + 3;
             }
-            if (index + 7 < formula.Length && formula.Substring(index, 7).Equals("CONCAT("))
+            if (index + 9 < formula.Length && formula.Substring(index, 9).Equals("HASVALUE("))
             {
-                operatorStack.Push(Operator.Concat);
-                return index + 7;
+                operatorStack.Push(Operator.HasValue);
+                return index + 9;
             }
-            if (index + 7 < formula.Length && formula.Substring(index, 7).Equals("SWITCH("))
+            if (index + 9 < formula.Length && formula.Substring(index, 9).Equals("ISNUMBER("))
             {
-                operatorStack.Push(Operator.Switch);
-                return index + 7;
+                operatorStack.Push(Operator.IsNumber);
+                return index + 9;
             }
-            if (index + 8 < formula.Length && formula.Substring(index, 8).Equals("SWITCHC("))
+            if (index + 8 < formula.Length && formula.Substring(index, 8).Equals("ISSTART("))
             {
-                operatorStack.Push(Operator.SwitchC);
+                operatorStack.Push(Operator.IsStart);
                 return index + 8;
             }
-            if (index + 7 < formula.Length && formula.Substring(index, 7).Equals("SUBSTR("))
+            if (index + 6 < formula.Length && formula.Substring(index, 6).Equals("ISEND("))
             {
-                operatorStack.Push(Operator.SubStr);
-                return index + 7;
+                operatorStack.Push(Operator.IsEnd);
+                return index + 6;
             }
-            if (index + 7 < formula.Length && formula.Substring(index, 7).Equals("SUBNUM("))
+            if (index + 8 < formula.Length && formula.Substring(index, 8).Equals("ISMATCH("))
             {
-                operatorStack.Push(Operator.SubNum);
-                return index + 7;
+                operatorStack.Push(Operator.IsMatch);
+                return index + 8;
             }
+
+            #endregion
+
+            #region 参数函数
+
             if (index + 9 < formula.Length && formula.Substring(index, 9).Equals("DATETIME("))
             {
                 operatorStack.Push(Operator.DateTime);
@@ -912,11 +980,31 @@ namespace HLC.Expression
                 operatorStack.Push(Operator.AsNum);
                 return index + 6;
             }
+            if (index + 6 < formula.Length && formula.Substring(index, 6).Equals("TONUM("))
+            {
+                operatorStack.Push(Operator.ToNum);
+                return index + 6;
+            }
             if (index + 6 < formula.Length && formula.Substring(index, 6).Equals("TOSTR("))
             {
                 operatorStack.Push(Operator.ToStr);
                 return index + 6;
             }
+            if (index + 5 < formula.Length && formula.Substring(index, 5).Equals("META("))
+            {
+                operatorStack.Push(Operator.META);
+                return index + 5;
+            }
+            if (index + 9 < formula.Length && formula.Substring(index, 9).Equals("DATAMETA("))
+            {
+                operatorStack.Push(Operator.DATAMETA);
+                return index + 9;
+            }
+
+            #endregion
+
+            #region 数学函数
+
             if (index + 4 < formula.Length && formula.Substring(index, 4).Equals("ABS("))
             {
                 operatorStack.Push(Operator.ABS);
@@ -1017,41 +1105,11 @@ namespace HLC.Expression
                 operatorStack.Push(Operator.POW);
                 return index + 4;
             }
-            if (index + 5 < formula.Length && formula.Substring(index, 5).Equals("META("))
-            {
-                operatorStack.Push(Operator.META);
-                return index + 5;
-            }
-            if (index + 5 < formula.Length && formula.Substring(index, 5).Equals("LEFT("))
-            {
-                operatorStack.Push(Operator.Left);
-                return index + 5;
-            }
-            if (index + 6 < formula.Length && formula.Substring(index, 6).Equals("RIGHT("))
-            {
-                operatorStack.Push(Operator.Right);
-                return index + 6;
-            }
-            if (index + 8 < formula.Length && formula.Substring(index, 8).Equals("REVERSE("))
-            {
-                operatorStack.Push(Operator.Reverse);
-                return index + 8;
-            }
-            if (index + 5 < formula.Length && formula.Substring(index, 5).Equals("FIND("))
-            {
-                operatorStack.Push(Operator.FIND);
-                return index + 5;
-            }
-            if (index + 7 < formula.Length && formula.Substring(index, 7).Equals("LENGTH("))
-            {
-                operatorStack.Push(Operator.Length);
-                return index + 7;
-            }
-            if (index + 6 < formula.Length && formula.Substring(index, 6).Equals("TONUM("))
-            {
-                operatorStack.Push(Operator.ToNum);
-                return index + 6;
-            }
+
+            #endregion
+
+            #region 数组函数
+
             if (index + 5 < formula.Length && formula.Substring(index, 5).Equals("ASUM("))
             {
                 operatorStack.Push(Operator.ASUM);
@@ -1072,21 +1130,29 @@ namespace HLC.Expression
                 operatorStack.Push(Operator.ACOUNT);
                 return index + 7;
             }
-            if (index + 8 < formula.Length && formula.Substring(index, 8).Equals("ISSTART("))
+            if (index + 5 < formula.Length && formula.Substring(index, 5).Equals("AMAX("))
             {
-                operatorStack.Push(Operator.IsStart);
-                return index + 8;
+                operatorStack.Push(Operator.AMAX);
+                return index + 5;
             }
-            if (index + 6 < formula.Length && formula.Substring(index, 6).Equals("ISEND("))
+            if (index + 5 < formula.Length && formula.Substring(index, 5).Equals("AMIN("))
             {
-                operatorStack.Push(Operator.IsEnd);
-                return index + 6;
+                operatorStack.Push(Operator.AMIN);
+                return index + 5;
             }
-            if (index + 8 < formula.Length && formula.Substring(index, 8).Equals("ISMATCH("))
+            if (index + 9 < formula.Length && formula.Substring(index, 9).Equals("AMAXDIFF("))
             {
-                operatorStack.Push(Operator.IsMatch);
-                return index + 8;
+                operatorStack.Push(Operator.AMAXDIFF);
+                return index + 9;
             }
+            if (index + 9 < formula.Length && formula.Substring(index, 9).Equals("AMINDIFF("))
+            {
+                operatorStack.Push(Operator.AMINDIFF);
+                return index + 9;
+            }
+
+            #endregion
+
             return index;
         }
 
@@ -1101,6 +1167,49 @@ namespace HLC.Expression
         {
             switch (op)
             {
+                #region 多元函数需要单独处理
+
+                case Operator.Max:
+                case Operator.Min:
+                case Operator.FunctionAnd:
+                case Operator.FunctionOr:
+                case Operator.If:
+                case Operator.In:
+                case Operator.Switch:
+                case Operator.SwitchC:
+                case Operator.SubStr:
+                case Operator.SubNum:
+                case Operator.MOD:
+                case Operator.POW:
+                case Operator.Get:
+                case Operator.Left:
+                case Operator.Right:
+                case Operator.FIND:
+                case Operator.META:
+                case Operator.DATAMETA:
+                case Operator.AINDEX:
+                case Operator.AMATCH:
+                case Operator.IsStart:
+                case Operator.IsEnd:
+                case Operator.IsMatch:
+                    {
+                        // 多元函数需要单独处理
+                        return false;
+                    }
+                case Operator.Separator:
+                    {
+                        // 尝试处理多元函数
+                        return TryFunctionSeparatorBuild(expressionStack, operatorStack);
+                    }
+
+                #endregion
+
+                #region 判断函数
+
+                #endregion
+
+                #region 数值函数
+
                 case Operator.Ceiling:
                     {
                         Expression data = expressionStack.Pop();
@@ -1119,18 +1228,85 @@ namespace HLC.Expression
                         expressionStack.Push(Rounding(data));
                         return true;
                     }
-                case Operator.Not:
-                    {
-                        Expression data = expressionStack.Pop();
-                        expressionStack.Push(Not(data));
-                        return true;
-                    }
+
+                #endregion
+
+                #region 文本函数
+
                 case Operator.Concat:
                     {
                         Expression data = expressionStack.Pop();
                         expressionStack.Push(MakeFunction(ExpressionType.Concat, data));
                         return true;
                     }
+                case Operator.Length:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.Length, data));
+                        return true;
+                    }
+                case Operator.Reverse:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.Reverse, data));
+                        return true;
+                    }
+                #endregion
+
+                #region 逻辑函数
+
+                case Operator.Not:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(Not(data));
+                        return true;
+                    }
+                case Operator.HasValue:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.HasValue, data));
+                        return true;
+                    }
+                case Operator.IsNumber:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.IsNumber, data));
+                        return true;
+                    }
+
+                #endregion
+
+                #region 参数函数
+
+                case Operator.DateTime:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.DateTime, data));
+                        return true;
+                    }
+                case Operator.AsNum:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.AsNum, data));
+                        return true;
+                    }
+                case Operator.ToNum:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.ToNum, data));
+                        return true;
+                    }
+                case Operator.ToStr:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.ToStr, data));
+                        return true;
+                    }
+
+                #endregion
+
+                #region 数学函数
+
                 case Operator.ABS:
                     {
                         Expression data = expressionStack.Pop();
@@ -1244,54 +1420,11 @@ namespace HLC.Expression
                         expressionStack.Push(MakeFunction(ExpressionType.PI));
                         return true;
                     }
-                case Operator.DateTime:
-                    {
-                        Expression data = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.DateTime, data));
-                        return true;
-                    }
-                case Operator.HasValue:
-                    {
-                        Expression data = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.HasValue, data));
-                        return true;
-                    }
-                case Operator.IsNumber:
-                    {
-                        Expression data = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.IsNumber, data));
-                        return true;
-                    }
-                case Operator.AsNum:
-                    {
-                        Expression data = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.AsNum, data));
-                        return true;
-                    }
-                case Operator.ToStr:
-                    {
-                        Expression data = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.ToStr, data));
-                        return true;
-                    }
-                case Operator.Length:
-                    {
-                        Expression data = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.Length, data));
-                        return true;
-                    }
-                case Operator.Reverse:
-                    {
-                        Expression data = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.Reverse, data));
-                        return true;
-                    }
-                case Operator.ToNum:
-                    {
-                        Expression data = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.ToNum, data));
-                        return true;
-                    }
+
+                #endregion
+
+                #region 数组函数
+
                 case Operator.ASUM:
                     {
                         Expression data = expressionStack.Pop();
@@ -1304,11 +1437,34 @@ namespace HLC.Expression
                         expressionStack.Push(MakeFunction(ExpressionType.ACOUNT, data));
                         return true;
                     }
-                case Operator.Separator:
+                case Operator.AMAX:
                     {
-                        // 尝试处理多元函数
-                        return TryFunctionSeparatorBuild(expressionStack, operatorStack);
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.AMAX, data));
+                        return true;
                     }
+                case Operator.AMIN:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.AMIN, data));
+                        return true;
+                    }
+                case Operator.AMAXDIFF:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.AMAXDIFF, data));
+                        return true;
+                    }
+                case Operator.AMINDIFF:
+                    {
+                        Expression data = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.AMINDIFF, data));
+                        return true;
+                    }
+
+                #endregion
+
+                #region 不是函数不处理
 
                 case Operator.Add:
                 case Operator.Subtract:
@@ -1328,32 +1484,11 @@ namespace HLC.Expression
                         // 不是函数
                         return false;
                     }
-                case Operator.Max:
-                case Operator.Min:
-                case Operator.FunctionAnd:
-                case Operator.FunctionOr:
-                case Operator.If:
-                case Operator.In:
-                case Operator.Switch:
-                case Operator.SwitchC:
-                case Operator.SubStr:
-                case Operator.SubNum:
-                case Operator.MOD:
-                case Operator.POW:
-                case Operator.Get:
-                case Operator.Left:
-                case Operator.Right:
-                case Operator.FIND:
-                case Operator.META:
-                case Operator.AINDEX:
-                case Operator.AMATCH:
-                case Operator.IsStart:
-                case Operator.IsEnd:
-                case Operator.IsMatch:
-                    {
-                        // 多元函数需要单独处理
-                        return false;
-                    }
+
+                #endregion
+
+                #region 其它不处理
+
                 case Operator.LeftBracket:
                 case Operator.RightBracket:
                 default:
@@ -1361,6 +1496,8 @@ namespace HLC.Expression
                         // 其他
                         break;
                     }
+
+                #endregion
             }
 
             return false;
@@ -1384,75 +1521,53 @@ namespace HLC.Expression
             }
             switch (topOp)
             {
-                case Operator.Rounding:
-                    {
-                        var digits = expressionStack.Pop();
-                        var value = expressionStack.Pop();
-                        expressionStack.Push(Rounding(value, digits));
-                        return true;
-                    }
-                case Operator.Max:
-                    {
-                        IList<Expression> arrayList = new List<Expression>();
-                        while (separatorCount-- >= 0)
-                        {
-                            arrayList.Add(expressionStack.Pop());
-                        }
-                        arrayList = arrayList.Reverse().ToList();
-                        expressionStack.Push(Max(arrayList));
-                        return true;
-                    }
-                case Operator.Min:
-                    {
-                        IList<Expression> arrayList = new List<Expression>();
-                        while (separatorCount-- >= 0)
-                        {
-                            arrayList.Add(expressionStack.Pop());
-                        }
-                        arrayList = arrayList.Reverse().ToList();
-                        expressionStack.Push(Min(arrayList));
-                        return true;
-                    }
-                case Operator.FunctionAnd:
-                    {
-                        IList<Expression> arrayList = new List<Expression>();
-                        while (separatorCount-- >= 0)
-                        {
-                            arrayList.Add(expressionStack.Pop());
-                        }
-                        arrayList = arrayList.Reverse().ToList();
-                        expressionStack.Push(MakeFunction(ExpressionType.FunctionAnd, arrayList));
-                        return true;
-                    }
-                case Operator.FunctionOr:
-                    {
-                        IList<Expression> arrayList = new List<Expression>();
-                        while (separatorCount-- >= 0)
-                        {
-                            arrayList.Add(expressionStack.Pop());
-                        }
-                        arrayList = arrayList.Reverse().ToList();
-                        expressionStack.Push(MakeFunction(ExpressionType.FunctionOr, arrayList));
-                        return true;
-                    }
+                #region 一元函数单独处理
+
+                // 一元函数
+                case Operator.Add:
+                case Operator.Subtract:
+                case Operator.Multiply:
+                case Operator.Divide:
+                case Operator.Ceiling:
+                case Operator.Flooring:
+                case Operator.Not:
+                case Operator.ABS:
+                case Operator.SIN:
+                case Operator.ASIN:
+                case Operator.COS:
+                case Operator.ACOS:
+                case Operator.TAN:
+                case Operator.ATAN:
+                case Operator.SINH:
+                case Operator.COSH:
+                case Operator.TANH:
+                case Operator.RAD:
+                case Operator.DEG:
+                case Operator.LOG10:
+                case Operator.EXP:
+                case Operator.FACT:
+                case Operator.SQRT:
+                case Operator.PI:
+                case Operator.HasValue:
+                case Operator.IsNumber:
+                case Operator.AsNum:
+                case Operator.Length:
+                case Operator.Reverse:
+                case Operator.ToNum:
+                case Operator.ASUM:
+                case Operator.ACOUNT:
+                    break;
+
+                #endregion
+
+                #region 判断函数
+
                 case Operator.If:
                     {
                         Expression ifFalse = expressionStack.Pop();
                         Expression ifTrue = expressionStack.Pop();
                         Expression condition = expressionStack.Pop();
                         expressionStack.Push(If(condition, ifTrue, ifFalse));
-                        return true;
-                    }
-                case Operator.In:
-                    {
-                        IList<Expression> arrayList = new List<Expression>();
-                        while (separatorCount-- > 0)
-                        {
-                            arrayList.Add(expressionStack.Pop());
-                        }
-                        arrayList = arrayList.Reverse().ToList();
-                        Expression value = expressionStack.Pop();
-                        expressionStack.Push(In(value, arrayList));
                         return true;
                     }
                 case Operator.Switch:
@@ -1485,6 +1600,45 @@ namespace HLC.Expression
 
                         return true;
                     }
+
+                #endregion
+
+                #region 数值函数
+
+                case Operator.Rounding:
+                    {
+                        var digits = expressionStack.Pop();
+                        var value = expressionStack.Pop();
+                        expressionStack.Push(Rounding(value, digits));
+                        return true;
+                    }
+                case Operator.Max:
+                    {
+                        IList<Expression> arrayList = new List<Expression>();
+                        while (separatorCount-- >= 0)
+                        {
+                            arrayList.Add(expressionStack.Pop());
+                        }
+                        arrayList = arrayList.Reverse().ToList();
+                        expressionStack.Push(Max(arrayList));
+                        return true;
+                    }
+                case Operator.Min:
+                    {
+                        IList<Expression> arrayList = new List<Expression>();
+                        while (separatorCount-- >= 0)
+                        {
+                            arrayList.Add(expressionStack.Pop());
+                        }
+                        arrayList = arrayList.Reverse().ToList();
+                        expressionStack.Push(Min(arrayList));
+                        return true;
+                    }
+
+                #endregion
+
+                #region 文本函数
+
                 case Operator.Concat:
                     {
                         IList<Expression> arrayList = new List<Expression>();
@@ -1532,6 +1686,175 @@ namespace HLC.Expression
                             return true;
                         }
                     }
+                case Operator.Left:
+                    {
+                        var length = expressionStack.Pop();
+                        var value = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.Left, new List<Expression>() { value, length }));
+                        return true;
+                    }
+                case Operator.Right:
+                    {
+                        var length = expressionStack.Pop();
+                        var value = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.Right, new List<Expression>() { value, length }));
+                        return true;
+                    }
+                case Operator.FIND:
+                    {
+                        var matchValue = expressionStack.Pop();
+                        var value = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.FIND, new List<Expression>() { value, matchValue }));
+                        return true;
+                    }
+
+                #endregion
+
+                #region 逻辑函数
+
+                case Operator.FunctionAnd:
+                    {
+                        IList<Expression> arrayList = new List<Expression>();
+                        while (separatorCount-- >= 0)
+                        {
+                            arrayList.Add(expressionStack.Pop());
+                        }
+                        arrayList = arrayList.Reverse().ToList();
+                        expressionStack.Push(MakeFunction(ExpressionType.FunctionAnd, arrayList));
+                        return true;
+                    }
+                case Operator.FunctionOr:
+                    {
+                        IList<Expression> arrayList = new List<Expression>();
+                        while (separatorCount-- >= 0)
+                        {
+                            arrayList.Add(expressionStack.Pop());
+                        }
+                        arrayList = arrayList.Reverse().ToList();
+                        expressionStack.Push(MakeFunction(ExpressionType.FunctionOr, arrayList));
+                        return true;
+                    }
+                case Operator.In:
+                    {
+                        IList<Expression> arrayList = new List<Expression>();
+                        while (separatorCount-- > 0)
+                        {
+                            arrayList.Add(expressionStack.Pop());
+                        }
+                        arrayList = arrayList.Reverse().ToList();
+                        Expression value = expressionStack.Pop();
+                        expressionStack.Push(In(value, arrayList));
+                        return true;
+                    }
+                case Operator.IsStart:
+                    {
+                        var matchValue = expressionStack.Pop();
+                        var value = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.IsStart, new List<Expression>() { value, matchValue }));
+                        return true;
+                    }
+                case Operator.IsEnd:
+                    {
+                        var matchValue = expressionStack.Pop();
+                        var value = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.IsEnd, new List<Expression>() { value, matchValue }));
+                        return true;
+                    }
+                case Operator.IsMatch:
+                    {
+                        var matchValue = expressionStack.Pop();
+                        var value = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.IsMatch, new List<Expression>() { value, matchValue }));
+                        return true;
+                    }
+
+                #endregion
+
+                #region 参数函数
+
+                case Operator.DateTime:
+                    {
+                        var format = expressionStack.Pop();
+                        var value = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.DateTime, new List<Expression>() { value, format }));
+                        return true;
+                    }
+                case Operator.Get:
+                    {
+                        var defaultExpression = expressionStack.Pop();
+                        var variableExpression = expressionStack.Pop();
+                        if (!variableExpression.IsVariableExpression())
+                        {
+                            return false;
+                        }
+                        expressionStack.Push(MakeFunction(ExpressionType.Get, new List<Expression>() { variableExpression, defaultExpression }));
+                        return true;
+                    }
+                case Operator.ToStr:
+                    {
+                        var format = expressionStack.Pop();
+                        var value = expressionStack.Pop();
+                        expressionStack.Push(MakeFunction(ExpressionType.ToStr, new List<Expression>() { value, format }));
+                        return true;
+                    }
+                case Operator.META:
+                case Operator.DATAMETA:
+                    {
+                        if (separatorCount > 1)
+                        {
+                            Expression formate = expressionStack.Pop();
+                            if (!formate.IsStringExpression(new List<string> { "bool", "txt", "num" }))
+                            {
+                                return false;
+                            }
+                            Expression metadata = expressionStack.Pop();
+                            if (!metadata.IsStringExpression())
+                            {
+                                return false;
+                            }
+                            Expression data = expressionStack.Pop();
+                            if (!data.IsVariableExpression())
+                            {
+                                return false;
+                            }
+                            if (topOp == Operator.META)
+                            {
+                                expressionStack.Push(MakeFunction(ExpressionType.META, new List<Expression>() { data, metadata, formate }));
+                            }
+                            else if (topOp == Operator.DATAMETA)
+                            {
+                                expressionStack.Push(MakeFunction(ExpressionType.DATAMETA, new List<Expression>() { data, metadata, formate }));
+                            }
+                            return true;
+                        }
+                        else
+                        {
+                            Expression metadata = expressionStack.Pop();
+                            if (!metadata.IsStringExpression())
+                            {
+                                return false;
+                            }
+                            Expression data = expressionStack.Pop();
+                            if (!data.IsVariableExpression())
+                            {
+                                return false;
+                            }
+                            if (topOp == Operator.META)
+                            {
+                                expressionStack.Push(MakeFunction(ExpressionType.META, new List<Expression>() { data, metadata }));
+                            }
+                            else if (topOp == Operator.DATAMETA)
+                            {
+                                expressionStack.Push(MakeFunction(ExpressionType.DATAMETA, new List<Expression>() { data, metadata }));
+                            }
+                            return true;
+                        }
+                    }
+
+                #endregion
+
+                #region 数学函数
+
                 case Operator.ATAN2:
                     {
                         var y = expressionStack.Pop();
@@ -1560,90 +1883,11 @@ namespace HLC.Expression
                         expressionStack.Push(MakeFunction(ExpressionType.POW, new List<Expression>() { value, newBase }));
                         return true;
                     }
-                case Operator.DateTime:
-                    {
-                        var format = expressionStack.Pop();
-                        var value = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.DateTime, new List<Expression>() { value, format }));
-                        return true;
-                    }
-                case Operator.Get:
-                    {
-                        var defaultExpression = expressionStack.Pop();
-                        var variableExpression = expressionStack.Pop();
-                        if (!variableExpression.IsVariableExpression())
-                        {
-                            return false;
-                        }
-                        expressionStack.Push(MakeFunction(ExpressionType.Get, new List<Expression>() { variableExpression, defaultExpression }));
-                        return true;
-                    }
-                case Operator.ToStr:
-                    {
-                        var format = expressionStack.Pop();
-                        var value = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.ToStr, new List<Expression>() { value, format }));
-                        return true;
-                    }
-                case Operator.META:
-                    {
-                        if (separatorCount > 1)
-                        {
-                            Expression formate = expressionStack.Pop();
-                            if (!formate.IsStringExpression(new List<string> { "bool", "txt", "num" }))
-                            {
-                                return false;
-                            }
-                            Expression metadata = expressionStack.Pop();
-                            if (!metadata.IsStringExpression())
-                            {
-                                return false;
-                            }
-                            Expression data = expressionStack.Pop();
-                            if (!data.IsVariableExpression())
-                            {
-                                return false;
-                            }
-                            expressionStack.Push(MakeFunction(ExpressionType.META, new List<Expression>() { data, metadata, formate }));
-                            return true;
-                        }
-                        else
-                        {
-                            Expression metadata = expressionStack.Pop();
-                            if (!metadata.IsStringExpression())
-                            {
-                                return false;
-                            }
-                            Expression data = expressionStack.Pop();
-                            if (!data.IsVariableExpression())
-                            {
-                                return false;
-                            }
-                            expressionStack.Push(MakeFunction(ExpressionType.META, new List<Expression>() { data, metadata }));
-                            return true;
-                        }
-                    }
-                case Operator.Left:
-                    {
-                        var length = expressionStack.Pop();
-                        var value = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.Left, new List<Expression>() { value, length }));
-                        return true;
-                    }
-                case Operator.Right:
-                    {
-                        var length = expressionStack.Pop();
-                        var value = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.Right, new List<Expression>() { value, length }));
-                        return true;
-                    }
-                case Operator.FIND:
-                    {
-                        var matchValue = expressionStack.Pop();
-                        var value = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.FIND, new List<Expression>() { value, matchValue }));
-                        return true;
-                    }
+
+                #endregion
+
+                #region 数组函数
+
                 case Operator.AINDEX:
                     {
                         var index = expressionStack.Pop();
@@ -1658,27 +1902,11 @@ namespace HLC.Expression
                         expressionStack.Push(MakeFunction(ExpressionType.AMATCH, new List<Expression>() { value, matchValue }));
                         return true;
                     }
-                case Operator.IsStart:
-                    {
-                        var matchValue = expressionStack.Pop();
-                        var value = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.IsStart, new List<Expression>() { value, matchValue }));
-                        return true;
-                    }
-                case Operator.IsEnd:
-                    {
-                        var matchValue = expressionStack.Pop();
-                        var value = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.IsEnd, new List<Expression>() { value, matchValue }));
-                        return true;
-                    }
-                case Operator.IsMatch:
-                    {
-                        var matchValue = expressionStack.Pop();
-                        var value = expressionStack.Pop();
-                        expressionStack.Push(MakeFunction(ExpressionType.IsMatch, new List<Expression>() { value, matchValue }));
-                        return true;
-                    }
+
+                #endregion
+
+                #region 不是函数不处理
+
                 // 二元运算符
                 case Operator.Greater:
                 case Operator.GreaterEqual:
@@ -1691,50 +1919,27 @@ namespace HLC.Expression
                 case Operator.BooleanAnd:
                 case Operator.BooleanOr:
                     break;
-                // 一元函数
-                case Operator.Add:
-                case Operator.Subtract:
-                case Operator.Multiply:
-                case Operator.Divide:
-                case Operator.Ceiling:
-                case Operator.Flooring:
-                case Operator.Not:
-                case Operator.ABS:
-                case Operator.SIN:
-                case Operator.ASIN:
-                case Operator.COS:
-                case Operator.ACOS:
-                case Operator.TAN:
-                case Operator.ATAN:
-                case Operator.SINH:
-                case Operator.COSH:
-                case Operator.TANH:
-                case Operator.RAD:
-                case Operator.DEG:
-                case Operator.LOG10:
-                case Operator.EXP:
-                case Operator.FACT:
-                case Operator.SQRT:
-                case Operator.PI:
-                case Operator.HasValue:
-                case Operator.IsNumber:
-                case Operator.AsNum:
-                case Operator.Length:
-                case Operator.Reverse:
-                case Operator.ToNum:
-                case Operator.ASUM:
-                case Operator.ACOUNT:
-                    break;
+
+                #endregion
+
+                #region 其它不处理
+
                 // 其它
                 case Operator.Separator:
                 case Operator.LeftBracket:
                 case Operator.RightBracket:
                 default:
                     break;
+
+                #endregion
             }
 
             return false;
         }
+
+        #endregion
+
+        #region 数字构建
 
         /// <summary>
         /// 尝试解析出数字
@@ -1786,6 +1991,10 @@ namespace HLC.Expression
             return currentIndex;
         }
 
+        #endregion
+
+        #region 布尔构建
+
         /// <summary>
         /// 尝试解析出Boolean
         /// </summary>
@@ -1808,6 +2017,10 @@ namespace HLC.Expression
             return index;
         }
 
+        #endregion
+
+        #region 常量构建
+
         /// <summary>
         /// 尝试解析出常量，如PI()
         /// </summary>
@@ -1824,6 +2037,10 @@ namespace HLC.Expression
             }
             return index;
         }
+
+        #endregion
+
+        #region 字符串构建
 
         /// <summary>
         /// 尝试解析出字符串
@@ -1914,6 +2131,10 @@ namespace HLC.Expression
             }
         }
 
+        #endregion
+
+        #region 变量参数构建
+
         /// <summary>
         /// 尝试从字符串<paramref name="formula"/>中位置<paramref name="index"/>的位置开始构建变量
         /// </summary>
@@ -2003,6 +2224,10 @@ namespace HLC.Expression
             }
         }
 
+        #endregion
+
+        #region 数值区间构建
+
         /// <summary>
         /// 尝试从字符串<paramref name="formula"/>中位置<paramref name="index"/>的位置开始构建区间
         /// </summary>
@@ -2046,6 +2271,10 @@ namespace HLC.Expression
             return index;
         }
 
+        #endregion
+
+        #region 公式注释移除
+
         /// <summary>
         /// 尝试去掉注释
         /// </summary>
@@ -2076,6 +2305,8 @@ namespace HLC.Expression
 
             return currentIndex;
         }
+
+        #endregion
 
         #endregion
 
