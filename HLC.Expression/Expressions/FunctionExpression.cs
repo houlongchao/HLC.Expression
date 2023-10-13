@@ -783,7 +783,7 @@ namespace HLC.Expression
                     {
                         var valueExpression = Children[0].Invoke(parameters);
                         var index = Children[1].Invoke(parameters).NumberResult;
-                        if (index < 1)
+                        if (index < 0)
                         {
                             InvokeResult = Result("");
                             break;
@@ -798,9 +798,9 @@ namespace HLC.Expression
                         if (valueExpression.IsNumberList())
                         {
                             var values = valueExpression.NumberListResult;
-                            if (values.Count >= index)
+                            if (values.Count > index)
                             {
-                                InvokeResult = Result(values[(int)index - 1]);
+                                InvokeResult = Result(values[(int)index]);
                                 break;
                             }
                             else
@@ -812,9 +812,9 @@ namespace HLC.Expression
                         else
                         {
                             var values = valueExpression.ListResult;
-                            if (values.Count >= index)
+                            if (values.Count > index)
                             {
-                                InvokeResult = Result(values[(int)index - 1].ToString());
+                                InvokeResult = Result(values[(int)index].ToString());
                                 break;
                             }
                             else
@@ -841,7 +841,7 @@ namespace HLC.Expression
                             {
                                 if (values[i] == matchExpression.NumberResult)
                                 {
-                                    InvokeResult = Result((int)i + 1);
+                                    InvokeResult = Result(i);
                                     break;
                                 }
                             }
@@ -855,7 +855,7 @@ namespace HLC.Expression
                             {
                                 if (values[i]?.ToString() == matchExpression.StringResult)
                                 {
-                                    InvokeResult = Result((int)i + 1);
+                                    InvokeResult = Result(i);
                                     break;
                                 }
                             }

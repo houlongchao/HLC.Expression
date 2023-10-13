@@ -426,14 +426,14 @@ namespace HLC.Expression
                 new Item(Array, "AINDEX()", "获取指定下标数据")
                 {
                     Demo = "AINDEX({Array}, 1)  AINDEX({Array}, 1)",
-                    Input = "输入参数必须2个。第一个为数组参数，或结果为数组的表达式，第二个为指定下标（从1开始）",
+                    Input = "输入参数必须2个。第一个为数组参数，或结果为数组的表达式，第二个为指定下标（从0开始）",
                     Output = "任意值。输出指定下标位置的值。没有数据返回空字符串。"
                 },
                 new Item(Array, "AMATCH()", "下标搜索")
                 {
                     Demo = "AMATCH({Array}, 100)  AMATCH({Array}, '123')",
                     Input = "输入参数必须2个。第一个为数组参数，或结果为数组的表达式，第二个为要匹配的数据",
-                    Output = "整数。输出匹配到的数据下标。没匹配到返回-1 。"
+                    Output = "整数。输出匹配到的数据下标(从0开始)。没匹配到返回-1 。"
                 },
                 new Item(Array, "AMAX()", "数组最大值")
                 {
