@@ -34,17 +34,17 @@
         /// <summary>
         /// 向上取整 CEILING(
         /// </summary>
-        Ceiling,
+        CEILING,
 
         /// <summary>
         /// 向下取整 FLOORING(
         /// </summary>
-        Flooring,
+        FLOORING,
 
         /// <summary>
         /// 四舍五入 ROUNDING(
         /// </summary>
-        Rounding,
+        ROUNDING,
 
         #endregion
 
@@ -53,12 +53,12 @@
         /// <summary>
         /// 最大值 MAX(
         /// </summary>
-        Max,
+        MAX,
 
         /// <summary>
         /// 最小值 MIN(
         /// </summary>
-        Min,
+        MIN,
 
         #endregion
 
@@ -125,7 +125,7 @@
         /// <summary>
         /// 非 NOT(
         /// </summary>
-        Not,
+        NOT,
 
         /// <summary>
         /// 与运算 AND(
@@ -144,22 +144,22 @@
         /// <summary>
         /// 条件判断 IF(
         /// </summary>
-        If,
+        IF,
 
         /// <summary>
         /// 给的值是否在指定列表中 IN(
         /// </summary>
-        In,
+        IN,
 
         /// <summary>
         /// 匹配方法 SWITCH(
         /// </summary>
-        Switch,
+        SWITCH,
 
         /// <summary>
         /// 匹配方法 SWITCHC(
         /// </summary>
-        SwitchC,
+        SWITCHC,
 
         #endregion
 
@@ -168,27 +168,27 @@
         /// <summary>
         /// 合并多个字符串 CONCAT(
         /// </summary>
-        Concat,
+        CONCAT,
 
         /// <summary>
         /// 字串获取 SUBSTR(
         /// </summary>
-        SubStr,
+        SUBSTR,
 
         /// <summary>
         /// 字串转数字 SUBNUM(
         /// </summary>
-        SubNum,
+        SUBNUM,
 
         /// <summary>
         /// 从左侧截取字符串 LEFT(
         /// </summary>
-        Left,
+        LEFT,
 
         /// <summary>
         /// 从右侧截取字符串 RIGHT(
         /// </summary>
-        Right,
+        RIGHT,
 
         /// <summary>
         /// 获取字符串长度 LENGTH(
@@ -203,7 +203,7 @@
         /// <summary>
         /// 字符串取反 REVERSE(
         /// </summary>
-        Reverse,
+        REVERSE,
 
         #endregion
 
@@ -321,27 +321,27 @@
         /// <summary>
         /// 日期时间 DATETIME(
         /// </summary>
-        DateTime,
+        DATETIME,
 
         /// <summary>
         /// 获取值 GET(
         /// </summary>
-        Get,
+        GET,
 
         /// <summary>
         /// 作为数字  ASNUM(
         /// </summary>
-        AsNum,
+        ASNUM,
 
         /// <summary>
         /// 转为数字  TONUM(
         /// </summary>
-        ToNum,
+        TONUM,
 
         /// <summary>
         /// 转为字符串 TOSTR(
         /// </summary>
-        ToStr,
+        TOSTR,
 
         /// <summary>
         /// 获取属性 META(
@@ -404,27 +404,27 @@
         /// <summary>
         /// 含有值 HASVALUE(
         /// </summary>
-        HasValue,
+        HASVALUE,
 
         /// <summary>
         /// 是否为数字 ISNUMBER(
         /// </summary>
-        IsNumber,
+        ISNUMBER,
 
         /// <summary>
         /// 是否以指定字符串开始 ISSTART(
         /// </summary>
-        IsStart,
+        ISSTART,
 
         /// <summary>
         /// 是否以指定字符串结束 ISEND(
         /// </summary>
-        IsEnd,
+        ISEND,
 
         /// <summary>
         /// 是否可以用指定正则匹配 ISMATCH(
         /// </summary>
-        IsMatch,
+        ISMATCH,
 
         #endregion
 

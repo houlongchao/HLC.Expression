@@ -13,7 +13,7 @@ namespace HLC.Expression
             {
                 case ExpressionType.Variable:
                 case ExpressionType.BooleanConstant:
-                case ExpressionType.In:
+                case ExpressionType.IN:
                 case ExpressionType.Greater:
                 case ExpressionType.GreaterEqual:
                 case ExpressionType.Less:
@@ -22,11 +22,11 @@ namespace HLC.Expression
                 case ExpressionType.NotEqual:
                 case ExpressionType.BooleanAnd:
                 case ExpressionType.BooleanOr:
-                case ExpressionType.FunctionAnd:
-                case ExpressionType.FunctionOr:
-                case ExpressionType.Not:
+                case ExpressionType.AND:
+                case ExpressionType.OR:
+                case ExpressionType.NOT:
                     return true;
-                case ExpressionType.If:
+                case ExpressionType.IF:
                     return (expression is FunctionExpression ifExpression) &&
                            ifExpression.Children[0].IsBoolResult() &&
                            ifExpression.Children[1].IsBoolResult() &&
@@ -45,15 +45,15 @@ namespace HLC.Expression
                 case ExpressionType.Subtract:
                 case ExpressionType.Multiply:
                 case ExpressionType.Divide:
-                case ExpressionType.Ceiling:
-                case ExpressionType.Flooring:
-                case ExpressionType.Rounding:
-                case ExpressionType.Max:
-                case ExpressionType.Min:
+                case ExpressionType.CEILING:
+                case ExpressionType.FLOORING:
+                case ExpressionType.ROUNDING:
+                case ExpressionType.MAX:
+                case ExpressionType.MIN:
                 case ExpressionType.Power:
                 case ExpressionType.Modulo:
                     return true;
-                case ExpressionType.If:
+                case ExpressionType.IF:
                     return (expression is FunctionExpression ifExpression) &&
                            ifExpression.Children[0].IsBoolResult() &&
                            ifExpression.Children[1].IsNumberResult() &&
@@ -69,9 +69,9 @@ namespace HLC.Expression
             {
                 case ExpressionType.Variable:
                 case ExpressionType.StringConstant:
-                case ExpressionType.Concat:
+                case ExpressionType.CONCAT:
                     return true;
-                case ExpressionType.If:
+                case ExpressionType.IF:
                     return (expression is FunctionExpression ifExpression) &&
                            ifExpression.Children[0].IsBoolResult() &&
                            ifExpression.Children[1].IsStringResult() &&

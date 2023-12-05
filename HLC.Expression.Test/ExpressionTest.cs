@@ -383,6 +383,8 @@ namespace HLC.Expression.Test
             Assert.AreEqual(0.5m, Expression.From("ROUNDING(COS(RAD(60)), 6)").Invoke().NumberResult);
             Assert.AreEqual(60m, Expression.From("ROUNDING(DEG(ACOS(0.5)), 6)").Invoke().NumberResult);
             Assert.AreEqual(1m, Expression.From("ROUNDING(TAN(RAD(45)), 6)").Invoke().NumberResult);
+            Console.WriteLine(Expression.From("ATAN2(2,1)").Invoke().NumberResult);
+            Console.WriteLine(Expression.From("ATAN(1/12)").Invoke().NumberResult);
             Assert.AreEqual(true, Expression.From("ATAN(1/2)==ATAN2(2,1)").Invoke().BooleanResult);
             Assert.AreEqual(1.175201m, Expression.From("ROUNDING(SINH(1), 6)").Invoke().NumberResult);
             Assert.AreEqual(3.762196m, Expression.From("ROUNDING(COSH(2), 6)").Invoke().NumberResult);

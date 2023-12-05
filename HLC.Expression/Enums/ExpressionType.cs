@@ -68,17 +68,17 @@
         /// <summary>
         /// 向上取整
         /// </summary>
-        Ceiling,
+        CEILING,
 
         /// <summary>
         /// 向下取整
         /// </summary>
-        Flooring,
+        FLOORING,
 
         /// <summary>
         /// 四舍五入
         /// </summary>
-        Rounding,
+        ROUNDING,
 
         #endregion
 
@@ -87,12 +87,12 @@
         /// <summary>
         /// 最大值
         /// </summary>
-        Max,
+        MAX,
 
         /// <summary>
         /// 最小值
         /// </summary>
-        Min,
+        MIN,
 
         #endregion
 
@@ -159,17 +159,17 @@
         /// <summary>
         /// 方法与
         /// </summary>
-        FunctionAnd,
+        AND,
 
         /// <summary>
         /// 方法或
         /// </summary>
-        FunctionOr,
+        OR,
 
         /// <summary>
         /// 非
         /// </summary>
-        Not,
+        NOT,
 
         #endregion
 
@@ -178,22 +178,22 @@
         /// <summary>
         /// 条件计算
         /// </summary>
-        If,
+        IF,
 
         /// <summary>
         /// 是否存在于指定列表
         /// </summary>
-        In,
+        IN,
 
         /// <summary>
         /// 数据匹配 Switch
         /// </summary>
-        Switch,
+        SWITCH,
 
         /// <summary>
         /// 数据包含匹配 SwitchC
         /// </summary>
-        SwitchC,
+        SWITCHC,
 
         #endregion
 
@@ -202,27 +202,27 @@
         /// <summary>
         /// 合并字符串
         /// </summary>
-        Concat,
+        CONCAT,
 
         /// <summary>
         /// 子串获取
         /// </summary>
-        SubStr,
+        SUBSTR,
 
         /// <summary>
         /// 子串转数字
         /// </summary>
-        SubNum,
+        SUBNUM,
 
         /// <summary>
         /// 从左侧截取字符串
         /// </summary>
-        Left,
+        LEFT,
 
         /// <summary>
         /// 从右侧截取字符串
         /// </summary>
-        Right,
+        RIGHT,
 
         /// <summary>
         /// 获取字符串长度
@@ -237,7 +237,7 @@
         /// <summary>
         /// 字符串取反 REVERSE(
         /// </summary>
-        Reverse,
+        REVERSE,
 
         #endregion
 
@@ -246,27 +246,27 @@
         /// <summary>
         /// 日期时间
         /// </summary>
-        DateTime,
+        DATETIME,
 
         /// <summary>
         /// 获取数据，如果没有则返回默认值
         /// </summary>
-        Get,
+        GET,
 
         /// <summary>
         /// 作为数字
         /// </summary>
-        AsNum,
+        ASNUM,
 
         /// <summary>
         /// 转为数字
         /// </summary>
-        ToNum,
+        TONUM,
 
         /// <summary>
         /// 转为字符串
         /// </summary>
-        ToStr,
+        TOSTR,
 
         /// <summary>
         /// 获取属性
@@ -394,27 +394,27 @@
         /// <summary>
         /// 含有数据
         /// </summary>
-        HasValue,
+        HASVALUE,
 
         /// <summary>
         /// 是否是数字
         /// </summary>
-        IsNumber,
+        ISNUMBER,
 
         /// <summary>
         /// 是否以指定字符串开始 ISSTART(
         /// </summary>
-        IsStart,
+        ISSTART,
 
         /// <summary>
         /// 是否以指定字符串结束 ISEND(
         /// </summary>
-        IsEnd,
+        ISEND,
 
         /// <summary>
         /// 是否可以用指定正则匹配 ISMATCH(
         /// </summary>
-        IsMatch,
+        ISMATCH,
 
         #endregion
 

@@ -47,18 +47,7 @@
                 return 10;
             }
 
-
-            if (op == Operator.Separator ||
-                op == Operator.Ceiling ||
-                op == Operator.Flooring ||
-                op == Operator.Rounding ||
-                op == Operator.Max ||
-                op == Operator.Min ||
-                op == Operator.Not ||
-                op == Operator.If ||
-                op == Operator.In ||
-                op == Operator.FunctionAnd ||
-                op == Operator.FunctionOr)
+            if (op == Operator.Separator)
             {
                 return 5;
             }
