@@ -353,6 +353,11 @@
         /// </summary>
         DATAMETA,
 
+        /// <summary>
+        /// 当前系统时间 NOW(
+        /// </summary>
+        NOW,
+
         #endregion
 
         #region 数组

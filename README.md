@@ -4,21 +4,21 @@
 
 一款支持**数学运算**，**逻辑运算**，**字符串运算**，常用**数学函数运算**以及其它常用**自定义函数**运算的工具库。
 
+**高度抽象，快速扩展自定义函数**
+
 ## 1. 功能说明
 
-- [x] 将字符串表达式解析成表达式树
-
-- [x] 对表达式树进行计算
+- [x] 对字符串表达式进行解析计算
 
 
-- [x] 计算字符串数学表达式的值
 
-- [x] 计算字符串逻辑表达式的值
-
-- [x] 字符串表达式中支持变量
-- [x] 支持常用数学函数
-- [x] 支持参数属性计算
-- [x] 支持牛顿法求一元函数
+- [x] 支持常用数学计算
+- [x] 支持常用逻辑运算
+- [x] 支持常用字符串运算
+- [x] 支持带入参数计算
+- [x] 支持参数负载属性计算
+- [x] 支持牛顿法求解一元函数
+- [x] 高度抽象，支持快速扩展自定义函数
 
 
 
@@ -318,7 +318,7 @@ Expression.From("{num1}+{num2}+{num1}*{num2}-{num1}*4.5+{num2}*0.5").NewtonSolve
 | `TOSTR()`    | 转字符串      | `TOSTR({DATE})` `TOSTR({DATE}, 'yyyy-MM-dd')` | 字符串                  |
 | `META()`     | 获取参数属性    | `META({A}, 'name')` `META({A}, 'age', 'num')` | 字符串或指定类型txt/num/bool |
 | `DATAMETA()` | 获取数据值属性   | `DATAMETA({OPT:A}, 'meta03')`  `DATAMETA({OPT:A}, 'meta02', 'bool')` | 字符串或指定类型txt/num/bool |
-|              |           |                                          |                      |
+| `NOW()`      | 获取当前系统时间  | `NOW()` `   NOW('UTC')`                  | 日期                   |
 
 ##### DATETIME 转日期
 
@@ -331,6 +331,10 @@ Expression.From("{num1}+{num2}+{num1}*{num2}-{num1}*4.5+{num2}*0.5").NewtonSolve
 - 第二个参数为格式化字符串
 
 > 日期格式化字符串示例：`yyyy-MM-dd HH:mm:ss`
+
+##### NOW 获取当前系统时间
+
+- 无参数时返回当前系统本地时间，可选参数`UTC`返回当前系统UTC时间`
 
 
 
@@ -427,6 +431,96 @@ ROUNDING(DEG(2), 6)
 ROUNDING(LOG(2), 6)
 ROUNDING(LOG(2,5), 6)
 //更多请看代码单元测试
+```
+
+
+
+## 5. 自定义扩展
+
+### 5.1 扩展二元运算
+
+``` C#
+// 在Segment目录中复制一个BinarySegment*
+// 修改Segment的命名以BinarySegment开头，以自定义扩展名结尾
+public class BinarySegmentAdd : BinarySegment     // 必须继承BinarySegment基类
+{
+    public override string MatchString => "+";    // 表达式中要匹配的二元运算符
+    public override Operator MatchOperator => Operator.Add;    // 表达式匹配时的枚举标识，在Operator枚举中新建
+    public override ExpressionType ExpressionType => ExpressionType.Add;   // 构建的表达式枚举标识，在ExpressionType枚举中新建
+
+    // 二元运算执行计算过程
+    // left 二元运算符左侧的表达式
+    // right 二元运算符右侧的表达式
+    // parameters 计算时带入的变量参数值
+    public override ResultExpression Invoke(Expression left, Expression right, Parameters parameters)  
+    {
+        ResultExpression leftResult = left.Invoke(parameters);
+        ResultExpression rightResult = right.Invoke(parameters);
+        try
+        {
+            var result = leftResult.NumberResult + rightResult.NumberResult;
+            return Expression.Result(result);
+        }
+        catch
+        {
+            string result = leftResult.StringResult + rightResult.StringResult;
+            return Expression.Result(result);
+        }
+    }
+  
+    // 二元运算描述说明信息
+    public override ExpressionSymbolDefinitionItem GetDefinistion()        
+    {
+        return new ExpressionSymbolDefinitionItem("+", "加法") { Demo = "5+2", Details = "左右只能是数字或表达式结果为数字" };
+    }
+}
+```
+
+### 5.2 扩展函数运算
+
+``` C#
+// 在Segment目录中复制一个FunctionSegment*
+// 修改Segment的命名以FunctionSegment开头，以自定义扩展名结尾
+public class FunctionSegmentNOW : FunctionSegment   			// 必须继承FunctionSegment基类
+{
+    public override string MatchString { get; } = "NOW(";		// 表达式中要匹配的函数名，带左括号
+    public override Operator MatchOperator { get; } = Operator.NOW;         // 表达式匹配时的枚举标识，在Operator枚举中新建
+    public override ExpressionType ExpressionType => ExpressionType.NOW;    // 构建的表达式枚举标识，在ExpressionType枚举中新建
+
+    // 函数运算执行计算过程
+    // children 函数括号中的表达式
+    // parameters 计算时带入的变量参数值
+    public override ResultExpression Invoke(IList<Expression> children, Parameters parameters)   
+    {
+        if (children.Count == 0)
+        {
+            return Expression.Result(DateTime.Now);
+        }
+        else
+        {
+            var format = children[0].Invoke(parameters).StringResult;
+            if ("UTC".Equals(format, StringComparison.CurrentCultureIgnoreCase))
+            {
+                return Expression.Result(DateTime.UtcNow);
+            }
+            else
+            {
+                return Expression.Result(DateTime.Now);
+            }
+        }
+    }
+
+    // 函数运算描述说明信息
+    public override ExpressionFunctionDefinitionItem GetDefinistion()
+    {
+        return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Value, "NOW()", "获取当前系统时间")
+        {
+            Demo = "NOW()   NOW('UTC')",
+            Input = "无参数时返回本地时间，参数为UTC时返回UTC时间",
+            Output = "当前系统时间，日期类型",
+        };
+    }
+}
 ```
 
 

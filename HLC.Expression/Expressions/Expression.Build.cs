@@ -488,13 +488,26 @@ namespace HLC.Expression
                     return true;
                 }
 
-                Expression data = expressionStack.Pop();
-                var expression = segment.BuildFunctionExpression(data);
-                if (expression != null)
+                if (expressionStack.Count == 0)
                 {
-                    expressionStack.Push(expression);
-                    return true;
+                    var expression = segment.BuildFunctionExpression();
+                    if (expression != null)
+                    {
+                        expressionStack.Push(expression);
+                        return true;
+                    }
                 }
+                else
+                {
+                    Expression data = expressionStack.Pop();
+                    var expression = segment.BuildFunctionExpression(data);
+                    if (expression != null)
+                    {
+                        expressionStack.Push(expression);
+                        return true;
+                    }
+                }
+
                 return false;
             }
         }

@@ -71,6 +71,16 @@ namespace HLC.Expression.Segments
         }
 
         /// <summary>
+        /// 构建函数表达式
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public virtual Expression BuildFunctionExpression()
+        {
+            return Expression.MakeFunction(ExpressionType);
+        }
+
+        /// <summary>
         /// 执行表达式计算
         /// </summary>
         /// <param name="children"></param>

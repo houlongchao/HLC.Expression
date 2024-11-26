@@ -88,6 +88,10 @@ namespace HLC.Expression.Test
             Assert.AreEqual(true, Expression.From("DATETIME('2021-01-01')<'2021-01-02'").Invoke().BooleanResult);
             Assert.AreEqual(true, Expression.From("DATETIME('202101011200', 'yyyyMMddHHmm')<'2021-01-02'").Invoke().BooleanResult);
 
+            Assert.AreEqual(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Expression.From("NOW()").Invoke().StringResult);
+            Assert.AreEqual(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Expression.From("NOW('other')").Invoke().StringResult);
+            Assert.AreEqual(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), Expression.From("NOW('UTC')").Invoke().StringResult);
+
             Assert.AreEqual("bc", Expression.From("SUBSTR('abcde', 1, 2)").Invoke().ToString());
             Assert.AreEqual("ab", Expression.From("SUBSTR('abcde', 0, 2)").Invoke().ToString());
             Assert.AreEqual("abcde", Expression.From("SUBSTR('abcde', 0)").Invoke().ToString());
