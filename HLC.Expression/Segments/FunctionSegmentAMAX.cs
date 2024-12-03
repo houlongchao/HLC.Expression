@@ -33,7 +33,7 @@ namespace HLC.Expression.Segments
             }
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Array, "AMAX()", "数组最大值")
             {

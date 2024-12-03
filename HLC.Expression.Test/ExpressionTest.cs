@@ -209,13 +209,24 @@ namespace HLC.Expression.Test
             Assert.IsNotNull(testFormula);
         }
 
+        [Test(Description = "测试非侵入式自定义函数")]
+        public void TestCallFuncInvoke()
+        {
+            var parameters = new Parameters();
+            parameters.RegisterCallFunc("Concat", (arg) =>
+            {
+                return string.Concat(arg);
+            });
+
+            Assert.AreEqual("12345", Expression.From("CALL('concat', 1,2,3,4,2+3)").Invoke(parameters).StringResult);
+        }
+
         [Test]
         public void TestParameterInvoke()
         {
             var parameters = InitParameters();
 
             Assert.AreEqual("aaa", Expression.From("CONCAT({str0},{str1})").Invoke(parameters).StringResult);
-
 
             Assert.AreEqual(false, Expression.From("{num}=={range2}").Invoke(parameters).BooleanResult);
             Assert.AreEqual(true, Expression.From("{num1}=={range2}").Invoke(parameters).BooleanResult);

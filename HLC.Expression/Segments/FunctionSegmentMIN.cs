@@ -20,7 +20,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(min);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Number, "MIN()", "取最小值")
             {

@@ -16,7 +16,7 @@ namespace HLC.Expression.Segments
             return Expression.Result((decimal)Math.Log10((double)value));
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Math, "LOG10()", "以10为底对数")
             {

@@ -17,7 +17,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(radians);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Math, "RAD()", "角度转弧度")
             {

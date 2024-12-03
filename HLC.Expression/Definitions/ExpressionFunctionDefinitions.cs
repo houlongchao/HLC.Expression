@@ -13,10 +13,10 @@ namespace HLC.Expression
             var functionSegments = SegmentManager.GetAllFunctionSegments();
             foreach (var functionSegment in functionSegments)
             {
-                var definistion = functionSegment.GetDefinistion();
-                if (definistion != null)
+                var definition = functionSegment.GetDefinition();
+                if (definition != null)
                 {
-                    Items.Add(definistion);
+                    Items.Add(definition);
                 }
             }
         }

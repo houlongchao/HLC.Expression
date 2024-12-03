@@ -16,7 +16,11 @@ namespace HLC.Expression.Segments
             return Expression.Result(Math.Abs(value));
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        /// <summary>
+        /// 获取函数定义
+        /// </summary>
+        /// <returns></returns>
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Math, "ABS()", "绝对值函数")
             {

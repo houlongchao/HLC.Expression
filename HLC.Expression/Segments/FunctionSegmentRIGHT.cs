@@ -18,7 +18,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(result);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Text, "RIGHT()", "从右侧取指定长度子串")
             {

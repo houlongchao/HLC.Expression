@@ -17,7 +17,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(result);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Text, "LENGTH()", "获取字符串长度")
             {

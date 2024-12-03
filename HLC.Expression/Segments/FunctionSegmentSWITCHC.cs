@@ -50,7 +50,7 @@ namespace HLC.Expression.Segments
             throw new ExpressionCalculateException(this.ToString(), "No match was found");
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.If, "SWITCHC()", "模糊开关匹配")
             {

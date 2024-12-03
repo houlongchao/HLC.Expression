@@ -29,7 +29,7 @@ namespace HLC.Expression.Segments
             }
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Boolean, "HASVALUE()", "是否有数据")
             {

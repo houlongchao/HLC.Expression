@@ -55,7 +55,7 @@ namespace HLC.Expression.Segments
             }
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Value, "DATAMETA()", "获取数据属性信息")
             {

@@ -18,7 +18,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(result);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Boolean, "ISEND()", "是否以指定字符串结尾")
             {

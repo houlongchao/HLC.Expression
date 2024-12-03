@@ -16,7 +16,7 @@ namespace HLC.Expression.Segments
             return Expression.Result((decimal)Math.Cos((double)value));
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Math, "COS()", "余弦函数")
             {

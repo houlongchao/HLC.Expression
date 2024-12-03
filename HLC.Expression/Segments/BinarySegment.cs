@@ -2,6 +2,9 @@
 
 namespace HLC.Expression.Segments
 {
+    /// <summary>
+    /// 二元片段
+    /// </summary>
     public abstract class BinarySegment
     {
         /// <summary>
@@ -35,6 +38,10 @@ namespace HLC.Expression.Segments
         /// <returns></returns>
         public abstract ResultExpression Invoke(Expression left, Expression right, Parameters parameters);
 
-        public abstract ExpressionSymbolDefinitionItem GetDefinistion();
+        /// <summary>
+        /// 获取二元片段定义
+        /// </summary>
+        /// <returns></returns>
+        public abstract ExpressionSymbolDefinitionItem GetDefinition();
     }
 }

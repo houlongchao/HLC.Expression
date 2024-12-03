@@ -17,7 +17,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(degrees);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Math, "DEG()", "弧度转角度")
             {

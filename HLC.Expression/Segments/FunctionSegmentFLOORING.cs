@@ -17,7 +17,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(Math.Floor(result));
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Number, "FLOORING()", "向下取整")
             {

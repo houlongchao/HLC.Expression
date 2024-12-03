@@ -10,7 +10,7 @@ namespace HLC.Expression.Segments
 
         public override ExpressionType ExpressionType => ExpressionType.Equal;
 
-        public override ExpressionSymbolDefinitionItem GetDefinistion()
+        public override ExpressionSymbolDefinitionItem GetDefinition()
         {
             return new ExpressionSymbolDefinitionItem("==", "等于") { Demo = "5==2", Details = "如果左侧为数字，右侧可以是一个区间，如{A}==[1,10]" };
         }

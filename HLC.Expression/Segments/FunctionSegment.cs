@@ -73,7 +73,6 @@ namespace HLC.Expression.Segments
         /// <summary>
         /// 构建函数表达式
         /// </summary>
-        /// <param name="data"></param>
         /// <returns></returns>
         public virtual Expression BuildFunctionExpression()
         {
@@ -103,6 +102,6 @@ namespace HLC.Expression.Segments
             return null;
         }
 
-        public abstract ExpressionFunctionDefinitionItem GetDefinistion();
+        public abstract ExpressionFunctionDefinitionItem GetDefinition();
     }
 }

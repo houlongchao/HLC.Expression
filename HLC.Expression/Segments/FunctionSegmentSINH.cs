@@ -16,7 +16,7 @@ namespace HLC.Expression.Segments
             return Expression.Result((decimal)Math.Sinh((double)value));
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Math, "SINH()", "双曲正弦函数")
             {

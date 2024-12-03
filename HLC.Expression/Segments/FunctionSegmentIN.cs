@@ -81,7 +81,7 @@ namespace HLC.Expression.Segments
             }
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Boolean, "IN()", "包含判断")
             {

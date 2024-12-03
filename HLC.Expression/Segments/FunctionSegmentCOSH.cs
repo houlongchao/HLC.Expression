@@ -16,7 +16,7 @@ namespace HLC.Expression.Segments
             return Expression.Result((decimal)Math.Cosh((double)value));
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Math, "COSH()", "双曲余弦函数")
             {

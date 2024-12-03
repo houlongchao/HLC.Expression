@@ -17,7 +17,7 @@ namespace HLC.Expression.Segments
             return Expression.Result((decimal)Math.Atan2((double)y, (double)x));
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Math, "ATAN2()", "反余切函数")
             {

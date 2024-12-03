@@ -15,7 +15,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(result.NumberResult);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Value, "TONUM()", "转为数字")
             {

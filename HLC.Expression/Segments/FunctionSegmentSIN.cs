@@ -16,7 +16,7 @@ namespace HLC.Expression.Segments
             return Expression.Result((decimal)Math.Sin((double)value));
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Math, "SIN()", "正弦函数")
             {

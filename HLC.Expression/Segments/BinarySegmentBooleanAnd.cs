@@ -10,7 +10,7 @@ namespace HLC.Expression.Segments
 
         public override ExpressionType ExpressionType => ExpressionType.BooleanAnd;
 
-        public override ExpressionSymbolDefinitionItem GetDefinistion()
+        public override ExpressionSymbolDefinitionItem GetDefinition()
         {
             return new ExpressionSymbolDefinitionItem("&&", "与运算"){ Demo = "true && false", Details = "左右只能是Boolean或表达式结果为Boolean"};
         }

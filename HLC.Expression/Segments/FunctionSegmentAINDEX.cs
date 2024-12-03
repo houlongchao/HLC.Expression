@@ -50,7 +50,7 @@ namespace HLC.Expression.Segments
             }
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Array, "AINDEX()", "获取指定下标数据")
             {

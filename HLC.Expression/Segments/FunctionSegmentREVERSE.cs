@@ -18,7 +18,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(result);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Text, "REVERSE()", "反转字符串")
             {

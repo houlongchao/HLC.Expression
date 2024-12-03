@@ -17,7 +17,7 @@ namespace HLC.Expression.Segments
             return Expression.Result((decimal)Math.PI);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Math, "PI()", "圆周率PI")
             {

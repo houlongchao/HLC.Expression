@@ -16,7 +16,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(result.NumberResult);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             // 准备移除该函数，所以不返回定义，但为了兼容保留解析和计算
             return null;

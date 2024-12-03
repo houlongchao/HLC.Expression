@@ -11,7 +11,7 @@ namespace HLC.Expression.Segments
 
         public override ExpressionType ExpressionType => ExpressionType.Power;
 
-        public override ExpressionSymbolDefinitionItem GetDefinistion()
+        public override ExpressionSymbolDefinitionItem GetDefinition()
         {
             return new ExpressionSymbolDefinitionItem("^", "指数") { Demo = "5^2", Details = "左右只能是数字或表达式结果为数字" };
         }

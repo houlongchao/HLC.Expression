@@ -28,7 +28,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(false);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Boolean, "OR()", "逻辑或运算")
             {

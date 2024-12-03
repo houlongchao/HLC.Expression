@@ -17,7 +17,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(Math.Ceiling(result));
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Number, "CEILING()", "向上取整")
             {

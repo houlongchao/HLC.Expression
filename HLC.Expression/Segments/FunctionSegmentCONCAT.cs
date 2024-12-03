@@ -31,7 +31,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(sb.ToString());
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Text, "CONCAT()", "字符串拼接")
             {

@@ -19,6 +19,7 @@
 - [x] 支持参数负载属性计算
 - [x] 支持牛顿法求解一元函数
 - [x] 高度抽象，支持快速扩展自定义函数
+- [x] 支持非侵入自定义函数
 
 
 
@@ -116,6 +117,22 @@ ExpressionSetting.SetSetting(new MySetting());
 // 求参数num2的值
 Expression.From("{num1}+{num2}+{num1}*{num2}-{num1}*4.5+{num2}*0.5").NewtonSolve("num2", parameters);
 ```
+
+
+
+#### 3.1.6 非侵入自定义函数
+
+``` C#
+ var parameters = new Parameters();
+ parameters.RegisterCallFunc("Concat", (arg) =>
+ {
+     return string.Concat(arg);
+ });
+
+ Assert.AreEqual("12345", Expression.From("CALL('concat', 1,2,3,4,2+3)").Invoke(parameters).StringResult);
+```
+
+
 
 ### 3.2 支持的二元运算符
 
@@ -378,7 +395,6 @@ Expression.From("{num1}+{num2}+{num1}*{num2}-{num1}*4.5+{num2}*0.5").NewtonSolve
 | `AMAXDIFF()` | 数组最大相邻差  | `AMAXDIFF({Array})`    | 数值   |
 | `AMINDIFF()` | 数组最小相邻差  | `AMINDIFF({Array})`    | 数值   |
 |              |          |                        |      |
-
 
 ### 3.4 约束说明
 

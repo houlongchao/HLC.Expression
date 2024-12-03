@@ -19,7 +19,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(result);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Boolean, "ISMATCH()", "是否可以用指定正则匹配")
             {

@@ -13,7 +13,7 @@ namespace HLC.Expression
             var segments = SegmentManager.GetAllBinarySegments();
             foreach (var segment in segments)
             {
-                var definistion = segment.GetDefinistion();
+                var definistion = segment.GetDefinition();
                 if (definistion != null)
                 {
                     Items.Add(definistion);

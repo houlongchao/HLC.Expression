@@ -20,7 +20,7 @@ namespace HLC.Expression.Segments
             return Expression.Result(max);
         }
 
-        public override ExpressionFunctionDefinitionItem GetDefinistion()
+        public override ExpressionFunctionDefinitionItem GetDefinition()
         {
             return new ExpressionFunctionDefinitionItem(ExpressionFunctionDefinistionGroups.Number, "MAX()", "取最大值")
             {
